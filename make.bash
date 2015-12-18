@@ -5,11 +5,13 @@
 # license that can be found in the LICENSE file.
 
 test -d tmp || mkdir tmp
-git clone --depth 1 https://github.com/tsuru/tsuru.git tmp/tsuru
+git clone https://github.com/tsuru/tsuru.git tmp/tsuru
 pushd tmp/tsuru
+git checkout $COMMIT
 pip install -r requirements.txt
 popd
 pushd tmp/tsuru/docs
 make html
 popd
-cp -rp tmp/tsuru/docs/_build/html/ .
+test -d $VERSION || mkdir $VERSION
+cp -rp tmp/tsuru/docs/_build/html/ $VERSION
