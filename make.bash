@@ -17,6 +17,7 @@ install () {
 generate () {
     version=$1
     commit=$2
+    mkdir -p build
 
     pushd tmp/tsuru
     git checkout $commit
@@ -24,11 +25,15 @@ generate () {
     pushd tmp/tsuru/docs
     make html
     popd
-    test -d $version || mkdir $version
-    cp -rp tmp/tsuru/docs/_build/html/ $version
+    cp -rp tmp/tsuru/docs/_build/html/ build/$version
     pushd tmp/tsuru/docs
-    make clean 
+    make clean
     popd
+}
+
+function copy_deploy_files {
+    cp nginx.conf build
+    cp tsuru.yaml build
 }
 
 clean () {
@@ -37,9 +42,9 @@ clean () {
 
 install
 
-generate master master 
+generate master master
 generate latest 0.13.0
-generate stable 0.13.0 
+generate stable 0.13.0
 generate 0.13 0.13.0
 generate 0.12 0.12.4
 generate 0.11 0.11.3
@@ -53,5 +58,7 @@ generate 0.4 0.4
 generate 0.3 0.3.12
 generate 0.2 0.2.12
 generate 0.1 0.1.0
+
+copy_deploy_files
 
 clean
