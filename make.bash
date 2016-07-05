@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Copyright 2015 tsuru authors. All rights reserved.
+# Copyright 2016 tsuru authors. All rights reserved.
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
 
@@ -43,8 +43,9 @@ clean () {
 install
 
 generate master master
-generate latest 0.13.0
-generate stable 0.13.0
+generate latest 1.0.0
+generate stable 1.0.0
+generate 1.0.0 1.0.0
 generate 0.13 0.13.0
 generate 0.12 0.12.4
 generate 0.11 0.11.3
