@@ -44,9 +44,10 @@ clean () {
 install
 
 generate master master
-generate latest 1.1.0-rc1
-generate stable 1.0.0
-generate 1.1.0 1.1.0-rc1
+generate latest 1.1.0-rc2
+generate stable 1.0.1
+generate 1.1.0 1.1.0-rc2
+generate 1.0.1 1.0.1
 generate 1.0.0 1.0.0
 generate 0.13 0.13.0
 generate 0.12 0.12.4
