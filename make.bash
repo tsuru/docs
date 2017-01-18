@@ -26,11 +26,10 @@ generate () {
     pushd tmp/tsuru
     if [[ $commit == "master" ]]; then
         ln -s `pwd` ${worktree}
-        cp -rf docs/conf.py conf.template.py
     else
         git worktree add ${worktree} $commit
-        cp -rp docs/theme/sphinx_rtd_theme ${worktree}/docs/theme/
-        cp -rf conf.template.py ${worktree}/docs/conf.py
+        cp -rf docs/theme/sphinx_rtd_theme_ext ${worktree}/docs/theme/
+        cp -rf docs/conf.py ${worktree}/docs/
         cp -rf docs/handlers.yml ${worktree}/docs/
     fi
     cp -rf ${releases_file} ${worktree}/docs/
