@@ -86,10 +86,7 @@ for t in ${sortedtags}; do
     latest=$t
 done
 
-generate master $master
-generate latest $latest
 for docv in "${!generate_versions[@]}"; do
-    generate $docv ${generate_versions[$docv]}
     generate_keys+=($docv)
 done
 
@@ -100,6 +97,20 @@ for docv in ${sorted[*]}; do
     echo "\"$docv\"," >> ${RELEASES_FILE}
 done
 echo "]" >> ${RELEASES_FILE}
+
+echo "Will generate master, tag: master"
+echo "Will generate stable, tag: ${stable}"
+echo "Will generate latest, tag: ${latest}"
+for docv in ${sorted[*]}; do
+    echo "Will generate $docv, tag: ${generate_versions[$docv]}"
+done
+
+generate master master
+generate stable $stable
+generate latest $latest
+for docv in ${sorted[*]}; do
+    generate $docv ${generate_versions[$docv]}
+done
 
 for job in `jobs -p`; do
     wait $job || exit 1
