@@ -1,10 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright 2016 tsuru authors. All rights reserved.
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
 
 set -e
+
+RELEASES_FILE="tmp/releases.py"
 
 install () {
     test -d tmp || mkdir tmp
@@ -21,7 +23,7 @@ generate () {
     version=$1
     commit=$2
     worktree="worktree/${version}_${commit}"
-    releases_file=`pwd`/releases.py
+    releases_file="`pwd`/${RELEASES_FILE}"
 
     pushd tmp/tsuru
     if [[ $commit == "master" ]]; then
@@ -61,31 +63,43 @@ clean () {
 
 install
 
-generate master master
-generate latest 1.5.0-rc3
-generate stable 1.4.0
-generate 1.5.0 1.5.0-rc3
-generate 1.4.0 1.4.0
-generate 1.3.1 1.3.1
-generate 1.3.0 1.3.0
-generate 1.2.0 1.2.0
-generate 1.1.1 1.1.1
-generate 1.1.0 1.1.0
-generate 1.0.1 1.0.1
-generate 1.0.0 1.0.0
-generate 0.13 0.13.0
-generate 0.12 0.12.4
-generate 0.11 0.11.3
-generate 0.10 0.10.3
-generate 0.9 0.9.1
-generate 0.8 0.8.2
-generate 0.7 0.7.2
-generate 0.6 0.6.2
-generate 0.5 0.5.3
-generate 0.4 0.4.0
-generate 0.3 0.3.12
-generate 0.2 0.2.12
-generate 0.1 0.1.0
+pushd tmp/tsuru
+GSORT="$(which gsort || which sort)"
+sortedtags="$(git tag | ${GSORT} -V)"
+popd
+
+stable=""
+latest=""
+declare -A generate_versions
+declare -a generate_keys
+
+for t in ${sortedtags}; do
+    is_rc="$([[ $t =~ .*-.+ ]] && echo true || echo '')"
+    [[ $is_rc != true ]] && stable=$t
+    normalized=$(echo $t | perl -pe 's/([0-9]+\.[0-9]+)\..*/\1/')
+    [[ $normalized =~ .*-rc ]] && continue
+    current=${generate_versions[$normalized]}
+    if [[ $current != "" ]] && [[ $is_rc == true ]] && [[ ! $current =~ .*-.+ ]]; then
+        continue
+    fi
+    generate_versions[$normalized]=$t
+    latest=$t
+done
+
+generate master $master
+generate latest $latest
+for docv in "${!generate_versions[@]}"; do
+    generate $docv ${generate_versions[$docv]}
+    generate_keys+=($docv)
+done
+
+IFS=$'\n' sorted=($(${GSORT} -r -V <<<"${generate_keys[*]}"))
+unset IFS
+echo "RELEASES = [" > ${RELEASES_FILE}
+for docv in ${sorted[*]}; do
+    echo "\"$docv\"," >> ${RELEASES_FILE}
+done
+echo "]" >> ${RELEASES_FILE}
 
 for job in `jobs -p`; do
     wait $job || exit 1
