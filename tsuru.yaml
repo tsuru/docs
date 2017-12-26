@@ -1,2 +1,3 @@
 healthcheck:
   path: /stable/
+  use_in_router: true
