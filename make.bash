@@ -26,7 +26,7 @@ generate () {
     releases_file="`pwd`/${RELEASES_FILE}"
 
     pushd tmp/tsuru
-    if [[ $commit == "master" ]]; then
+    if [[ $commit == "main" ]]; then
         ln -s `pwd` ${worktree}
     else
         git worktree add ${worktree} $commit
@@ -98,14 +98,16 @@ for docv in ${sorted[*]}; do
 done
 echo "]" >> ${RELEASES_FILE}
 
-echo "Will generate master, tag: master"
+echo "Will generate main, tag: main"
+echo "Will generate master, tag: main"
 echo "Will generate stable, tag: ${stable}"
 echo "Will generate latest, tag: ${latest}"
 for docv in ${sorted[*]}; do
     echo "Will generate $docv, tag: ${generate_versions[$docv]}"
 done
 
-generate master master
+generate main main
+generate master main
 generate stable $stable
 generate latest $latest
 for docv in ${sorted[*]}; do
