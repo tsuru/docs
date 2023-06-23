@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "docs"
+version = "0.0.0"
+description = "Documentation about Tsuru."
+authors = ["Tsuru <tsuru@g.globo>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+mkdocs = "^1.4.3"
+mkdocs-material = "^9.1.17"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

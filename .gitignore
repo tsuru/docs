@@ -1,1 +1,8 @@
+# Mkdocs generated build dir
+site/
+
+# macOS internals
+.DS_Store
+
+# VIM internals
 *.swp

@@ -1,0 +1,10 @@
+site_name: tsuru
+site_url: https://docs.github.com
+site_author: Tsuru
+
+theme: material
+
+docs_dir: src
+
+nav:
+- Home: src/index.md
