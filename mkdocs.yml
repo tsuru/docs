@@ -2,7 +2,13 @@ site_name: tsuru
 site_url: https://docs.github.com
 site_author: Tsuru
 
-theme: material
+repo_url: https://github.com/tsuru/docs.git
+repo_name: tsuru/docs
+
+theme:
+  name: material
+  favicon: ./static/favicon.ico
+  logo: ./static/logo.svg
 
 docs_dir: src
 
