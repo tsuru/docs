@@ -1,4 +1,4 @@
-site_name: tsuru
+site_name: Tsuru Docs
 site_url: https://docs.github.com
 site_author: Tsuru
 
@@ -13,7 +13,36 @@ theme:
   palette:
     primary: black
 
+  features:
+  - content.code.copy
+  - content.code.select
+  - navigation.instant
+  - navigation.tracking
+  - navigation.tabs
+  - toc.follow
+
+markdown_extensions:
+- admonition
+- footnotes
+- pymdownx.details
+- pymdownx.highlight
+- pymdownx.snippets:
+    base_path:
+    - src/
+- pymdownx.superfences
+- pymdownx.tabbed:
+    alternate_style: true
+- toc:
+    permalink: true
+
 docs_dir: src
 
 nav:
-- Home: src/index.md
+- Home: index.md
+- Getting started: []
+- User guides:
+  - Deploy:
+    - Using Dockerfile: ./user_guides/deploy_using_dockerfile.md
+- Admin guides: []
+- References: []
+- Contributing: []
