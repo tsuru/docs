@@ -5,6 +5,10 @@ POETRY_BIN ?= poetry
 build: install/package-deps
 	$(POETRY_BIN) run mkdocs build
 
+.PHONY: clean
+clean:
+	rm -rfv ./site
+
 .PHONY: serve
 serve: install/package-deps
 	$(POETRY_BIN) run mkdocs serve
