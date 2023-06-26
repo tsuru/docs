@@ -10,6 +10,9 @@ theme:
   favicon: ./static/favicon.ico
   logo: ./static/logo.svg
 
+  palette:
+    primary: black
+
 docs_dir: src
 
 nav:
