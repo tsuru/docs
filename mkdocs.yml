@@ -41,7 +41,8 @@ nav:
 - Home: index.md
 - Getting started: []
 - User guides:
-  - Deploy:
+  - Install client: ./user_guides/install_client.md
+  - App deploy:
     - Using Dockerfile: ./user_guides/deploy_using_dockerfile.md
 - Admin guides: []
 - References: []
