@@ -38,8 +38,8 @@ markdown_extensions:
 docs_dir: src
 
 nav:
-- Home: index.md
-- Getting started: []
+- Getting started:
+  - Overview: ./getting_started/overview.md
 - User guides:
   - Install client: ./user_guides/install_client.md
   - App deploy:
