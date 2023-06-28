@@ -13,14 +13,17 @@ App developers can choose wisely the best programming language or framework for 
 Tsuru delivers a fast and reliable deployment process that enables developers to adopt continuous delivery practices.
 This streamlined process reduces the time and effort required for releasing new application versions.
 
-3. **Autoscaling**:
+3. **Autoscaling**.
 Grow dynamically the application to meet the demand - saving the allocated resources on periods with low application usage.
 
-4. **Multi-cloud support**:
+4. **Native integration with managed cloud services**.
+App developers can maximize cloud provider usage by seamlessly integrating their applications with external services (maybe cloud-managed service) such as databases, message brokers, object storage, and more.
+
+5. **Multi-cloud support**.
 Tsuru supports compatibility with multiple cloud providers, providing developers the freedom to choose their preferred infrastructure.
 Seamlessly deploy applications across different regions on cloud platforms or adopt a hybrid approach for enhanced resilience and availability.
 
-5. **No vendor-locking**:
+6. **No vendor-locking**.
 Tsuru projects are open-source software released under the [3rd-Clause BSD license](https://opensource.org/license/bsd-3-clause/).
 Furthermore, all external components/dependencies also are maintained by the open-source community (each one released under its own license).
 There is no proprietary code/solution involved.
