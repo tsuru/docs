@@ -10,7 +10,7 @@ In order to follow this guide, you need to install and configure properly each t
 1. [Docker][Docker - Install] (or [podman][Podman - Install])
 2. [Docker Compose][Docker Compose - Install]
 3. [Minikube][Minikube - Getting started] (or other similar tools such as [kind][kind - Getting started], [k3s][k3s - Getting started], etc)
-4. [tsuru](/user_guides/install_client) (Tsuru CLI)
+4. [tsuru](/user_guides/install_client.md) (Tsuru CLI)
 5. [yq][yq - Install]
 
 You also need to checkout the [Tsuru][Tsuru's repository]'s source code from GitHub.

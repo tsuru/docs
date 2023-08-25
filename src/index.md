@@ -1,3 +1,1 @@
-# Home
-
-Hello world!
+getting_started/overview.md

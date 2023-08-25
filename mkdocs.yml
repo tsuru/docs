@@ -1,5 +1,5 @@
 site_name: Tsuru Docs
-site_url: https://docs.github.com
+site_url: https://tsuru.github.com/docs
 site_author: Tsuru
 
 repo_url: https://github.com/tsuru/docs.git
@@ -46,7 +46,8 @@ nav:
     - Using Dockerfile: ./user_guides/deploy_using_dockerfile.md
 - Admin guides:
   - Managing teams: ./admin_guides/managing_teams.md
-- References: []
+- References:
+  - 404.md
 - Contributing:
   - Development environment:
     - Running development enviroment with Docker Compose: ./contributing/docker-compose.md
