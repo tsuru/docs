@@ -44,6 +44,9 @@ nav:
   - Install client: ./user_guides/install_client.md
   - App deploy:
     - Using Dockerfile: ./user_guides/deploy_using_dockerfile.md
-- Admin guides: []
+- Admin guides:
+  - Managing teams: ./admin_guides/managing_teams.md
 - References: []
-- Contributing: []
+- Contributing:
+  - Development environment:
+    - Running development enviroment with Docker Compose: ./contributing/docker-compose.md
