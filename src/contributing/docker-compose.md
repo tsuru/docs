@@ -126,11 +126,11 @@ minikube delete --all
 
 ### How do I rebuild the Tsuru API after changing its source code?
 
-During development cycle, you might need to rebuild Tsuru source code and relaunch it.
-Everytime you need to do it you should run:
+During the development cycle, you can rebuild and relaunch the Tsuru API with your changes.
+To do so, just run the code below:
 
 ``` bash
-docker-compose run --rebuild tsuru-api
+docker-compose up --build tsuru-api
 ```
 
 ## Troubleshooting
