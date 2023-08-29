@@ -23,8 +23,12 @@ theme:
 
 markdown_extensions:
 - admonition
+- attr_list
 - footnotes
 - pymdownx.details
+- pymdownx.emoji:
+    emoji_index: !!python/name:materialx.emoji.twemoji
+    emoji_generator: !!python/name:materialx.emoji.to_svg
 - pymdownx.highlight
 - pymdownx.snippets:
     base_path:
@@ -40,6 +44,7 @@ docs_dir: src
 nav:
 - Getting started:
   - Overview: ./getting_started/overview.md
+  - Architecture: ./getting_started/architecture.md
 - User guides:
   - Install client: ./user_guides/install_client.md
   - App deploy:
