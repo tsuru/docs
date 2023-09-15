@@ -53,6 +53,7 @@ nav:
     - Using Dockerfile: ./user_guides/deploy_using_dockerfile.md
 - Admin guides:
   - Managing platforms: ./admin_guides/managing_platforms.md
+  - Managing pools: ./admin_guides/managing_pools.md
   - Managing teams: ./admin_guides/managing_teams.md
 - References:
   - 404.md
