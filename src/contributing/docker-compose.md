@@ -83,7 +83,7 @@ tsuru cluster add my-cluster kubernetes \
     --default
 ```
 
-Click [here](https://docs.tsuru.io/stable/managing/clusters.html) to read more about Tsuru clusters.
+Click [here](../admin_guides/managing_clusters.md) to read more about Tsuru clusters.
 
 Now, you have everything to run Tsuru locally. Happy hacking.
 
