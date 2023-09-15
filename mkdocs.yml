@@ -46,6 +46,7 @@ nav:
   - Overview: ./getting_started/overview.md
   - Architecture: ./getting_started/architecture.md
   - "Install on minikube": ./getting_started/install_minikube.md
+  - "Install on GKE": ./getting_started/install_gke.md
 - User guides:
   - Install client: ./user_guides/install_client.md
   - App deploy:

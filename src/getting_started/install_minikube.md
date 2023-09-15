@@ -77,7 +77,7 @@ the same port in tsuru-ingress-nginx-controller.
 Add the localhost to tsuru target and log in:
 
 ``` bash
-$ tsuru target-add default https://localhost:8080 -s
+$ tsuru target-add default http://localhost:8080 -s
 $ tsuru login
 ```
 
