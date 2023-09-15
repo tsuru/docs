@@ -115,12 +115,12 @@ minikube delete --all
 
 ## Useful resources
 
-* [Managing teams](/docs/admin_guides/managing_teams)
-* [Managing pools](https://docs.tsuru.io/stable/managing/using-pools.html#adding-a-pool)
+* [Managing teams](../admin_guides/managing_teams.md)
+* [Managing pools](../admin_guides/managing_pools.md)
 * [Managing users and permissions](https://docs.tsuru.io/stable/managing/users-and-permissions.html)
-* [Managing platforms](https://docs.tsuru.io/stable/managing/create-platform.html)
+* [Managing platforms](../admin_guides/managing_platforms.md)
 * Deploy an app:
-    * [Deploy an app with Dockerfile](/docs/user_guides/deploy_using_dockerfile/)
+    * [Deploy an app with Dockerfile](../user_guides/deploy_using_dockerfile.md)
 
 ## FAQ
 
