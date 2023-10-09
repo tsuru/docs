@@ -55,6 +55,7 @@ nav:
   - Managing clusters: ./admin_guides/managing_clusters.md
   - Managing pools: ./admin_guides/managing_pools.md
   - Managing platforms: ./admin_guides/managing_platforms.md
+  - Managing roles: ./admin_guides/managing_roles.md
   - Managing teams: ./admin_guides/managing_teams.md
 
 - References:
