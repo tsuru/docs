@@ -2,8 +2,7 @@
 
 ## Overview
 
-Teams are one of the context to which tsuru roles apply. Its the main way of managing group of users to give them a common list of permissions as they work on related projects
-That way, once a permissions is given to a team, all users with this team role will inherit the same permissions
+Its the main way of managing group of users as they work on related projects
 
 ## Creating a team
 
