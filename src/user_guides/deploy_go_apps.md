@@ -15,7 +15,7 @@ $ tsuru app create <app-name> <app-platform>
 For GO, the app platform is, guess what, go! Let’s be over creative and develop a never-developed tutorial-app: a myapp
 
 ``` bash
-$ tsuru app create helloworld python
+$ tsuru app create helloworld go
 ```
 
 ## Application code

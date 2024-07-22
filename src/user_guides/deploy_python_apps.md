@@ -9,15 +9,15 @@ Creating python applications with tsuru it is so easy. basically you need to mai
 
 To create an app, you use the command app create:
 
-    ``` bash
-    $ tsuru app create <app-name> <app-platform>
-    ```
+``` bash
+$ tsuru app create <app-name> <app-platform>
+```
 
 For Python, the app platform is, guess what, python! Let’s be over creative and develop a never-developed tutorial-app: a myapp
 
-    ``` bash
-    $ tsuru app create myapp python
-    ```
+``` bash
+$ tsuru app create myapp python
+```
 
 
 ## Application code
