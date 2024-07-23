@@ -89,3 +89,33 @@ tsuru will compile and run the application automatically.
 It’s done! Now we have a simple go project deployed on tsuru.
 
 Now we can access your app in the URL displayed in app info (“helloworld.192.168.50.4.nip.io” in this case).
+
+
+# Deploy multiple processes aplication
+
+Teams often design their applications to distribute responsibilities across multiple processes, such as an API and a worker. While these processes might share the same repository, they typically have different entry points.
+
+Our GO platform simplifies handling this scenario, but it's essential to standardize your application.
+
+## Entry points
+
+You must organize the entry points in the filesystem to look like this:
+
+```
+
+# to create myapp-api binary
+cmd/myapp-api/main.go
+
+
+# to create myapp-worker binary
+cmd/myapp-worker/main.go
+```
+
+you can put every shared package outside of directory cmd.
+
+
+for each binary you need to specify on `Procfile`
+```
+web: myapp-api
+worker: myapp-worker
+```
