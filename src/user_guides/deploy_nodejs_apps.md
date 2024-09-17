@@ -53,7 +53,7 @@ This file is used to pick your nodejs version and install your dependencies.
 
 ### package-lock.json (strong recommended)
 
-The package-lock.json file is crucial in Node.js projects for ensuring consistent and reproducible builds. Here's why generating and maintaining this file is important: Ensures Consistent Dependency Versions, Speeds Up Installations and Improves Security
+The package-lock.json file is crucial in Node.js projects for ensuring consistent and reproducible builds. Here's why generating and maintaining this file is important: ensures consistent dependency versions, speeds Up installations and improves security
 
 ## yarn.lock (optional)
 
