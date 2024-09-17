@@ -51,6 +51,15 @@ This file is used to pick your nodejs version and install your dependencies.
 }
 ```
 
+### package-lock.json (strong recommended)
+
+The package-lock.json file is crucial in Node.js projects for ensuring consistent and reproducible builds. Here's why generating and maintaining this file is important
+
+
+## yarn.lock (optional)
+
+first we check if there is a `yarn.lock` file in the root of your files. If so, we use [yarn](https://yarnpkg.com/); otherwise, we use [npm](https://www.npmjs.com/package/npm).
+
 ### tsuru.yaml
 
 tsuru.yaml is used to tsuru specific settings, this may be the initial settings:
@@ -77,3 +86,17 @@ Let's deploy our application with command
 ```
 tsuru app deploy -a myapp .
 ```
+
+## Install development dependencies
+
+If you want to also install development dependencies, set the environment variable NPM_CONFIG_PRODUCTION=false
+
+example:
+
+```
+tsuru env set -a myapp NPM_CONFIG_PRODUCTION=false
+```
+
+## package.json, .nvmrc or .node-version
+
+The platform looks for desired node.js version in three places: .nvmrc, .node-version and package.json, the first value encountered will be used to instal the target version.
