@@ -1,4 +1,4 @@
-# Deploy Nodejs applications
+# Deploy Node.js applications
 
 
 ## Overview
@@ -75,5 +75,5 @@ gcc
 Let's deploy our application with command
 
 ```
-tsuru app deploy -a blog .
+tsuru app deploy -a myapp .
 ```
