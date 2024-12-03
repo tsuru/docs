@@ -54,6 +54,7 @@ nav:
     - GO apps: ./user_guides/deploy_go_apps.md
     - Python apps: ./user_guides/deploy_python_apps.md
     - Node.js apps: ./user_guides/deploy_nodejs_apps.md
+    - React.js apps: ./user_guides/deploy_react_apps.md
 
 - Admin guides:
   - Managing clusters: ./admin_guides/managing_clusters.md
