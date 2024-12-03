@@ -33,6 +33,6 @@ Well, now we have the build directory with all static files, the next step is to
 ``` bash
 $ cd build
 $ wget https://raw.githubusercontent.com/tsuru/platforms/refs/heads/master/examples/static-reactjs/nginx.conf
-$ wget https://github.com/tsuru/platforms/blob/master/examples/static-reactjs/tsuru.yml
+$ wget https://raw.githubusercontent.com/tsuru/platforms/refs/heads/master/examples/static-reactjs/tsuru.yml
 $ tsuru app deploy -a <app-name> .
 ```
