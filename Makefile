@@ -16,7 +16,7 @@ serve: install/package-deps
 .PHONY: install/package-deps
 install/package-deps: install/system-deps
 	@ echo "Installing package dependecies..."
-	$(POETRY_BIN) install
+	$(POETRY_BIN) install --no-root
 
 generate-tsuru-client-docs:
 	rm -Rf src/tsuru_client
