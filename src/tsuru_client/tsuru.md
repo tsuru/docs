@@ -16,6 +16,7 @@ tsuru [flags]
 
 ### SEE ALSO
 
+* [tsuru acl](tsuru_acl.md)	 - Executes the acl plugin.
 * [tsuru app](tsuru_app.md)	 - App is a program source code running on Tsuru.
 * [tsuru autoscale](tsuru_autoscale.md)	 - Manage autoscaling of application units.
 * [tsuru certificate](tsuru_certificate.md)	 - Certificate is used to manage SSL/TLS certificates for secure communication.
@@ -24,8 +25,10 @@ tsuru [flags]
 * [tsuru cname](tsuru_cname.md)	 - CNAME (Canonical Name) is a custom domain you assign to your application, allowing users to access it via a friendly URL (e.g., myapp.mydomain.com)
 * [tsuru completion](tsuru_completion.md)	 - Generate the autocompletion script for the specified shell
 * [tsuru deploy](tsuru_deploy.md)	 - Deploy the source code and/or configurations to the application on Tsuru.
+* [tsuru dicionario](tsuru_dicionario.md)	 - Executes the dicionario plugin.
 * [tsuru env](tsuru_env.md)	 - Manage environment variables from an app or job.
 * [tsuru event](tsuru_event.md)	 - Events are used to audit all actions performed on Tsuru resources.
+* [tsuru hc](tsuru_hc.md)	 - Executes the hc plugin.
 * [tsuru info](tsuru_info.md)	 - Shows information about a specific app. Its state, platform, etc.
 * [tsuru job](tsuru_job.md)	 - Job is a program that runs on a schedule or is executed manually
 * [tsuru log](tsuru_log.md)	 - Shows log entries for an application. These logs include everything the
@@ -42,6 +45,7 @@ tsuru [flags]
 * [tsuru role](tsuru_role.md)	 - Manage roles.
 * [tsuru rollback](tsuru_rollback.md)	 - Deploys an existing image for an app. You can list available images with `tsuru app deploy list`.
 * [tsuru router](tsuru_router.md)	 - A router is a component responsible for routing user traffic to applications.
+* [tsuru rpaasv2](tsuru_rpaasv2.md)	 - Executes the rpaasv2 plugin.
 * [tsuru service](tsuru_service.md)	 - A service is a well-defined API that tsuru communicates with to provide extra functionality for applications.
 * [tsuru shell](tsuru_shell.md)	 - Opens a remote shell inside unit.
 * [tsuru tag](tsuru_tag.md)	 - Tags are labels that can be assigned to applications and service instances to help organize and manage them effectively.

@@ -55,6 +55,11 @@ nav:
     - Python apps: ./user_guides/deploy_python_apps.md
     - Node.js apps: ./user_guides/deploy_nodejs_apps.md
     - React.js apps: ./user_guides/deploy_react_apps.md
+  - App configuration:
+    - Procfile: ./user_guides/procfile.md
+    - Unit states: ./user_guides/unit_states.md
+  - Troubleshooting:
+    - Recovering an application: ./user_guides/recovering_app.md
 
 - Admin guides:
   - Managing clusters: ./admin_guides/managing_clusters.md
@@ -64,7 +69,15 @@ nav:
   - Managing teams: ./admin_guides/managing_teams.md
 
 - References:
-  - Tsuru Client: ./tsuru_client/index.md
+  - Tsuru Client: ./tsuru_client/tsuru.md
+  - Configuration (tsuru.conf): ./reference/config.md
+  - Services:
+    - Building your service: ./services/build.md
+    - Service API workflow: ./services/api.md
+    - TSURU_SERVICES variable: ./services/environment_variables.md
+
+- FAQ: ./faq.md
+
 - Contributing:
   - Development environment:
     - Running development enviroment with Docker Compose: ./contributing/docker-compose.md
