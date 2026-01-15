@@ -64,7 +64,7 @@ nav:
   - Managing teams: ./admin_guides/managing_teams.md
 
 - References:
-  - 404.md
+  - Tsuru Client: ./tsuru_client/index.md
 - Contributing:
   - Development environment:
     - Running development enviroment with Docker Compose: ./contributing/docker-compose.md

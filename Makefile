@@ -18,6 +18,13 @@ install/package-deps: install/system-deps
 	@ echo "Installing package dependecies..."
 	$(POETRY_BIN) install
 
+generate-tsuru-client-docs:
+	rm -Rf src/tsuru_client
+	mkdir -p src/tsuru_client
+	cd src/tsuru_client && \
+		tsuru generate-doc && \
+	mv tsuru.md index.md
+
 .PHONY: install/system-deps
 install/system-deps:
 	@ $(POETRY_BIN) --version || \
