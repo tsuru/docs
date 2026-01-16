@@ -140,37 +140,32 @@ startupcheck:
 | `command` | Command to execute inside container. Exit 0 = passed. Ignored if `path` is set. | - |
 | `interval_seconds` | Interval between startup check calls after a failure. | `10` |
 
-## Kubernetes specific configs
+## Multiple & Custom ports
 
 You can configure which ports will be exposed on each process of your app.
 
 ```yaml
-kubernetes:
-  groups:
-    pod1:
-      process1:
-        ports:
-          - name: main-port
-            protocol: tcp
-            target_port: 4123
-            port: 8080
-          - name: other-port
-            protocol: udp
-            port: 5000
-    pod2:
-      process2:
+processes:
+- name: process1
+  ports:
+  - name: main-port
+    protocol: tcp
+    target_port: 4123
+    port: 8080
+  - name: other-port
+    protocol: udp
+    port: 5000
+- name: process2
 ```
-
-Inside the `groups` key, list each pod name (currently tsuru only supports one process per pod), and inside each one, the process names.
 
 ### Port configuration options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `name` | Descriptive name for the port. | - |
-| `protocol` | Port protocol: `TCP` or `UDP`. | `TCP` |
-| `target_port` | Port the process listens on. | `port` value |
-| `port` | Port exposed on Kubernetes service. | `target_port` value |
+| Option        | Description                         | Default             |
+|---------------|-------------------------------------|---------------------|
+| `name`        | Descriptive name for the port.      |                     |
+| `protocol`    | Port protocol: `TCP` or `UDP`.      | `TCP`               |
+| `target_port` | Port the process listens on.        | `port` value        |
+| `port`        | Port exposed on Kubernetes service. | `target_port` value |
 
 Either `port` or `target_port` must be specified. To expose no ports (e.g., for workers), leave the process field empty like `process2` in the example above.
 
