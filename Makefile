@@ -21,8 +21,10 @@ install/package-deps: install/system-deps
 generate-tsuru-client-docs:
 	rm -Rf src/tsuru_client
 	mkdir -p src/tsuru_client
+	- mv ~/.tsuru/plugins ~/.tsuru/plugins-backup
 	cd src/tsuru_client && \
 		tsuru generate-doc
+	- mv ~/.tsuru/plugins-backup ~/.tsuru/plugins
 
 .PHONY: install/system-deps
 install/system-deps:
