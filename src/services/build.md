@@ -125,21 +125,6 @@ def unbind_app(name):
     return "", 200
 ```
 
-### Whitelisting units
-
-**Endpoint:** `POST/DELETE /resources/<name>/bind`
-
-Handle access control when units are added or removed:
-
-```python
-@app.route("/resources/<name>/bind", methods=["POST", "DELETE"])
-def access_control(name):
-    app_host = request.form.get("app-host")
-    unit_host = request.form.get("unit-host")
-    # use unit-host and app-host for access control
-    return "", 201
-```
-
 ### Removing instances
 
 **Endpoint:** `DELETE /resources/<name>`
