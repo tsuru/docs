@@ -188,6 +188,34 @@ tsuru role permission add app-reader-restarter app.read
 tsuru role permission remove app-reader-restarter app.read
 ```
 
+Permission changes affect every existing assignment of the role immediately.
+The server authorizes these operations using role-management permissions, not
+the permission being changed:
+
+- Adding a permission requires the global
+  `role.update.permission.add` permission or an ancestor such as
+  `role.update`, `role`, or `*`.
+- Removing a permission requires the global
+  `role.update.permission.remove` permission or an ancestor.
+
+When adding a static permission, the permission must exist and support the
+role's context type. When adding a dynamic permission, it must refer to an
+action declared by an enabled service manifest, or to a valid ancestor of such
+an action, and support the role's context type. Static and dynamic permissions
+cannot be added in the same request.
+
+Removing a permission does not validate that the permission still exists or is
+currently attached to the role. Removing an absent permission is a successful
+no-op.
+
+!!! danger "Permission-management privileges"
+
+    The server does not require an administrator to possess a permission before
+    adding it to or removing it from a role. Adding a permission to an already
+    assigned role immediately expands the access of all its assignees. Treat
+    `role.update.permission.add`, `role.update.permission.remove`, and their
+    ancestors as security-administrator privileges.
+
 Update the role's description, context type, or name:
 
 ```bash
@@ -235,10 +263,54 @@ is assigned without a context value:
 tsuru role assign platform-auditor user@example.com
 ```
 
-To delegate a role, the acting administrator needs the role-assignment
-permission. Tsuru also verifies that the administrator holds the role's static
-permissions in the target context. This prevents a scoped administrator from
-delegating broader static access than they possess.
+To delegate a role, the acting administrator needs the global
+`role.update.assign` permission or an ancestor. Tsuru also verifies that the
+administrator holds every static permission in the role at the target context.
+For each static permission, any of the following grants is sufficient:
+
+- The exact permission at the exact context type and value.
+- An ancestor permission at the exact context type and value.
+- The permission or an ancestor with global context.
+
+For example, assigning a team role containing `app.create` for `myteam`
+requires `app.create` or an ancestor for `team:myteam`, or a corresponding
+global grant.
+
+Dynamic permissions are not included in this delegation check. A role that
+contains only dynamic permissions can be assigned by anyone with
+`role.update.assign`; a mixed role is checked only against its static
+permissions.
+
+Role dissociation has a similar rule. The administrator needs the global
+`role.update.dissociate` permission or an ancestor and must hold every static
+permission in the role at the supplied context. Consequently, an administrator
+may have permission to dissociate roles but still be unable to revoke a role
+whose static privileges exceed their own.
+
+Unlike assignment, dissociation does not validate that the context value still
+refers to an existing resource. It removes the exact role and context-value
+pair; removing an assignment that is already absent is a successful no-op.
+
+### Assignment endpoint behavior
+
+The API applies the same authorization model to users, team tokens, and groups,
+with a few target-specific differences:
+
+| Operation | Routes | Required permission | Additional conditions |
+| --- | --- | --- | --- |
+| Assign role | `POST /roles/{name}/user`, `POST /roles/{name}/token`, `POST /roles/{name}/group` | Global `role.update.assign` or an ancestor | Role exists; context is valid; administrator holds every static role permission at that context |
+| Dissociate role | `DELETE /roles/{name}/user/{email}`, `DELETE /roles/{name}/token/{token_id}`, `DELETE /roles/{name}/group/{group_name}` | Global `role.update.dissociate` or an ancestor | Role exists; administrator holds every static role permission at the supplied context |
+| Add permission | `POST /roles/{name}/permissions` | Global `role.update.permission.add` or an ancestor | Role and permission exist; permission supports the role context; static and dynamic permissions are not mixed |
+| Remove permission | `DELETE /roles/{name}/permissions/{permission}` | Global `role.update.permission.remove` or an ancestor | Role exists |
+
+For user assignments, the target user must already exist. For team-token
+assignments, the token must already exist. Assigning a role to a nonempty group
+name creates the stored group record when necessary. Dissociating from a group
+that does not exist is a successful no-op.
+
+All these routes require an authenticated token. A missing authentication token
+produces HTTP 401; a valid token without the required Tsuru permission produces
+HTTP 403.
 
 !!! tip
 
