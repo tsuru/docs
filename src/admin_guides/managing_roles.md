@@ -181,6 +181,13 @@ tsuru role list
 tsuru role info app-reader-restarter
 ```
 
+Create or delete a role:
+
+```bash
+tsuru role add <role-name> <role-context>
+tsuru role remove <role-name>
+```
+
 Add or remove individual permissions:
 
 ```bash
