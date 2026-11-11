@@ -11,7 +11,7 @@ The major advantage of React applications is that are just static files to serve
 To create an app, you use the command app create:
 
 ``` bash
-$ tsuru app create <app-name> static
+tsuru app create <app-name> static
 ```
 
 ## Build
@@ -22,7 +22,7 @@ Let's create an app using a well-known guide: https://github.com/facebook/create
 After creating, let's generate a build directory using the following:
 
 ``` bash
-$ npm run build
+npm run build
 ```
 
 
@@ -31,8 +31,8 @@ $ npm run build
 Well, now we have the build directory with all static files, the next step is to add two files to the build directory: tsuru.yml and nginx.conf, both are suggestions that work for most react apps:
 
 ``` bash
-$ cd build
-$ wget https://raw.githubusercontent.com/tsuru/platforms/refs/heads/master/examples/static-reactjs/nginx.conf
-$ wget https://raw.githubusercontent.com/tsuru/platforms/refs/heads/master/examples/static-reactjs/tsuru.yml
-$ tsuru app deploy -a <app-name> .
+cd build
+wget https://raw.githubusercontent.com/tsuru/platforms/refs/heads/master/examples/static-reactjs/nginx.conf
+wget https://raw.githubusercontent.com/tsuru/platforms/refs/heads/master/examples/static-reactjs/tsuru.yml
+tsuru app deploy -a <app-name> .
 ```

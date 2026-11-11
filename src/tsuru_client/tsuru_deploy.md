@@ -11,26 +11,26 @@ Files specified in the ".tsuruignore" file are skipped - similar to ".gitignore"
 Examples:
   To deploy using app's platform build process (just sending source code and/or configurations):
     Uploading all files within the current directory
-      $ tsuru app deploy -a <APP> .
+      tsuru app deploy -a <APP> .
 
     Uploading all files within a specific directory
-      $ tsuru app deploy -a <APP> mysite/
+      tsuru app deploy -a <APP> mysite/
 
     Uploading specific files
-      $ tsuru app deploy -a <APP> ./myfile.jar ./Procfile
+      tsuru app deploy -a <APP> ./myfile.jar ./Procfile
 
     Uploading specific files (ignoring their base directories)
-      $ tsuru app deploy -a <APP> --files-only ./my-code/main.go ./tsuru_stuff/Procfile
+      tsuru app deploy -a <APP> --files-only ./my-code/main.go ./tsuru_stuff/Procfile
 
   To deploy using a container image:
-    $ tsuru app deploy -a <APP> --image registry.example.com/my-company/app:v42
+    tsuru app deploy -a <APP> --image registry.example.com/my-company/app:v42
 
   To deploy using container file ("docker build" mode):
     Sending the the current directory as container build context - uses Dockerfile file as container image instructions:
-      $ tsuru app deploy -a <APP> --dockerfile .
+      tsuru app deploy -a <APP> --dockerfile .
 
     Sending a specific container file and specific directory as container build context:
-      $ tsuru app deploy -a <APP> --dockerfile ./Dockerfile.other ./other/
+      tsuru app deploy -a <APP> --dockerfile ./Dockerfile.other ./other/
 
 
 ```

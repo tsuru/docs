@@ -9,13 +9,13 @@ Lauching Go applications with Tsuru is remarkably simple. basically you need to 
 To create an app, you use the command app create:
 
 ``` bash
-$ tsuru app create <app-name> <app-platform>
+tsuru app create <app-name> <app-platform>
 ```
 
 For GO, the app platform is, guess what, go! Let’s be over creative and develop a never-developed tutorial-app: a myapp
 
 ``` bash
-$ tsuru app create helloworld go
+tsuru app create helloworld go
 ```
 
 ## Application code
@@ -61,7 +61,7 @@ func healthcheck(res http.ResponseWriter, req *http.Request) {
 To create go.mod file:
 
 ``` bash
-$ go mod init github.com/tsuru/helloworld
+go mod init github.com/tsuru/helloworld
 ```
 
 please update `github.com/tsuru/helloworld` to the correct git repository
@@ -81,7 +81,7 @@ healthcheck:
 You can just run tsuru app deploy command and your project will be deployed:
 
 ``` bash
-$ tsuru app deploy -a helloworld .
+tsuru app deploy -a helloworld .
 ```
 
 tsuru will compile and run the application automatically.
