@@ -87,7 +87,7 @@ healthcheck:
   headers:
     Host: test.com
     X-Custom-Header: xxx
-  allowed_failures: 0
+  allowed_failures: 3
   interval_seconds: 10
   timeout_seconds: 60
   deploy_timeout_seconds: 180
@@ -107,12 +107,16 @@ healthcheck:
 | `path` | Path to call for health check. Kubernetes expects status 200-399. | - |
 | `scheme` | HTTP scheme (`http` or `https`). | `http` |
 | `headers` | Additional HTTP headers (names should be capitalized). | - |
-| `allowed_failures` | Failures before marking unhealthy. | `3` |
+| `allowed_failures` | Failures before marking unhealthy. `0` means the default, not zero tolerance. | `3` |
 | `timeout_seconds` | Timeout for each health check call. | `60` |
 | `deploy_timeout_seconds` | Timeout for first successful health check during deploy. | global config |
 | `command` | Command to execute inside container. Exit 0 = healthy. Ignored if `path` is set. | - |
 | `interval_seconds` | Interval between health checks. | `10` |
 | `force_restart` | Restart unit after consecutive failures. Sets liveness probe in the Pod. | `false` |
+
+Any other key under `healthcheck` or `startupcheck` (including the removed `method`, `status`,
+`match`, `use_in_router` and `router_body`) is ignored, and the deploy log prints
+`WARNING: invalid or deprecated healthcheck field` for it.
 
 ### How checks map to Kubernetes probes
 
@@ -120,6 +124,7 @@ healthcheck:
 - `startupcheck` becomes the `startupProbe`.
 - `path` gets a leading `/` added if missing; `allowed_failures`, `interval_seconds` and `timeout_seconds` map to `failureThreshold`, `periodSeconds` and `timeoutSeconds`. HTTP checks pass on any 200-399 status.
 - `deploy_timeout_seconds` is the time the deploy waits for the first successful check. It is floored by the server config `docker:healthcheck:max-time` (120 seconds when unset): a lower value in `tsuru.yaml` is raised to that minimum.
+- On GKE, when the cluster has the `backendconfigs.cloud.google.com` CRD, tsuru also writes a `BackendConfig` per process from the HTTP healthcheck (`path`, `scheme`, `interval_seconds`, `timeout_seconds`, `allowed_failures`), so the Google load balancer probes the same endpoint. Command checks are not used there; the path defaults to `/` and the interval is raised above the timeout when needed.
 
 ## Startupcheck
 
@@ -134,7 +139,7 @@ startupcheck:
   headers:
     Host: test.com
     X-Custom-Header: xxx
-  allowed_failures: 0
+  allowed_failures: 3
   interval_seconds: 10
   timeout_seconds: 60
 ```
@@ -153,7 +158,7 @@ startupcheck:
 | `path` | Path to call for startup check. Kubernetes expects status 200-399. | - |
 | `scheme` | HTTP scheme (`http` or `https`). | `http` |
 | `headers` | Additional HTTP headers (names should be capitalized). | - |
-| `allowed_failures` | Failures before the check is considered failed. | `3` |
+| `allowed_failures` | Failures before the check is considered failed. `0` means the default. | `3` |
 | `timeout_seconds` | Timeout for each startup check call. | `60` |
 | `command` | Command to execute inside container. Exit 0 = passed. Ignored if `path` is set. | - |
 | `interval_seconds` | Interval between startup check calls after a failure. | `10` |
