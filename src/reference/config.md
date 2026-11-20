@@ -146,6 +146,35 @@ Used when `auth:scheme` is `oauth`. See [RFC 6749](http://tools.ietf.org/html/rf
 | `auth:oauth:collection` | Database collection for tokens. Default: `oauth_tokens` |
 | `auth:oauth:callback-port` | Callback port for authorization |
 
+### Multiple schemes (auth:multi)
+
+Available since tsuru 1.16. Set `auth:scheme` to `multi` to enable more than one scheme at
+once, for example native passwords for automation accounts and OIDC for people. Each enabled
+scheme is configured with its own keys as usual.
+
+| Setting | Description |
+|---------|-------------|
+| `auth:multi:schemes` | List of scheme names to enable, in order. Example: `[oidc, native]`. **Required** |
+| `auth:multi:default-scheme` | Scheme reported as default by `GET /auth/schemes`, which is what `tsuru login` uses when `--scheme` is not given. Default: the first entry of `auth:multi:schemes` |
+
+Login and token validation try each scheme in the list order and stop at the first one that
+succeeds. Users choose a specific scheme with `tsuru login --scheme <name>`.
+
+```yaml
+auth:
+  scheme: multi
+  multi:
+    schemes:
+    - oidc
+    - native
+    default-scheme: oidc
+  oidc:
+    client-id: tsuru
+    auth-url: https://idp.example.com/authorize
+    token-url: https://idp.example.com/token
+    jwks-url: https://idp.example.com/.well-known/jwks.json
+```
+
 ## Quota management
 
 ### quota:units-per-app
