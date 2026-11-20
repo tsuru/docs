@@ -4,117 +4,125 @@ title: Installing Tsuru in a local Kubernetes cluster with Helm
 
 # Installing Tsuru in a local Kubernetes cluster with Helm {#installing_tsuru_local}
 
-This post will show how to install and configure Tsuru in a local
-Kubernetes with Helm. All steps in this guide were done in Kubernetes
-v1.33.0. While it might work for almost all Kubernetes versions, some
-versions may break something. Feel free to report us in that case. You
-need to have both minikube and kubectl previously installed on your
-machine, if you don\'t have it yet, you can install it
-[here](https://minikube.sigs.k8s.io/docs/start/), with minikube and
-[kubectl](https://kubernetes.io/docs/tasks/tools/) properly installed,
-let\'s get started. To create a local Kubernetes cluster using minikube,
-run the command:
+This guide installs tsuru and everything it needs into a local [minikube](https://minikube.sigs.k8s.io/docs/start/)
+cluster with the `tsuru-stack` Helm chart. It was tested with Kubernetes v1.33.0; other versions
+should work, please report the ones that do not. You need `minikube`, `kubectl`, `helm` and the
+[tsuru client](../user_guides/install_client.md) installed.
+
+## Hardware requirements
+
+- 2 CPUs or more
+- 12 GB of free memory
+- 20 GB of free disk space
+
+## Create the cluster
 
 ``` bash
 minikube start --kubernetes-version=v1.33.0
 ```
 
-This example we use the docker driver to create a vm. If you want to use
-another driver see [minikube supported
-drivers](https://minikube.sigs.k8s.io/docs/drivers/). In relation to the
-\--kubernetes-version in the future we will have other versions
-available.
+The example uses the docker driver; see the [minikube drivers](https://minikube.sigs.k8s.io/docs/drivers/)
+for alternatives.
 
-## Hardware Requirements
+## What the chart installs
 
--   2 CPUs or more
--   12GB of free memory
--   20GB of free disk space
+`tsuru-stack` is an umbrella chart. It deploys, in the `tsuru-system` namespace:
 
-## Installing Helm
+| Component | Chart | Purpose |
+|---|---|---|
+| tsuru-api | `tsuru-api` | the API server (`tsurud`) |
+| MongoDB | bitnami `mongodb` (MongoDB 8) | tsuru's datastore |
+| Container registry | `docker-registry` | stores app images, plain HTTP, in-cluster only |
+| deploy-agent + BuildKit | `deploy-agent` | builds app images |
+| kubernetes-router | `kubernetes-router` | exposes apps through ingress-nginx |
+| ingress-nginx | `ingress-nginx` | ingress controller, class `tsuru-nginx` |
 
-Download a release of the [Helm
-client](https://github.com/helm/helm/releases). With helm installed,
-let\'s start
+There is no Redis or any queue service: tsuru keeps everything in MongoDB. MongoDB, the
+registry and ingress-nginx can each be disabled (`mongodb.enabled`, `registry.enabled`,
+`ingress-nginx.enabled=false`) when you bring your own.
 
-## Installing Tsuru
+!!! warning "The chart pins an old tsuru-api"
 
-To install Tsuru and its dependencies we will use a helm chart
+    `tsuru-stack` 0.8.11 depends on `tsuru-api` chart 0.3.12, whose default image is
+    tsuru-api **1.28.3**. These docs describe tsuru 1.34. Override the image tag on install,
+    as the commands below do, until the chart catches up.
 
-``` bash
-$ helm repo add tsuru https://tsuru.github.io/charts
-```
+Because `tsurud` runs inside the cluster it manages, it registers that cluster by itself: on
+the first start with no clusters configured it creates a cluster named `local` (default, with
+`disable-default-node-selector=true`) and a default pool also named `local`. You do not need
+`tsuru cluster add` or `tsuru pool add` to get started. See
+[Managing clusters](../admin_guides/managing_clusters.md) and
+[Managing pools](../admin_guides/managing_pools.md) for the full picture.
 
-Now let\'s install the chart!
+On minikube the chart also enables `registryAliases`, a DaemonSet that adds
+`tsuru-registry.tsuru-system.svc.cluster.local` to each node's `/etc/hosts`, so the kubelet can
+pull app images from the in-cluster registry by its service name.
 
-``` bash
-$ helm install tsuru tsuru/tsuru-stack --create-namespace --namespace tsuru-system
-```
-
-Now you have tsuru installed!!
-
-## Configuring Tsuru
-
-Create the admin user on tsuru:
-
-``` bash
-$ kubectl exec -it -n tsuru-system deploy/tsuru-api -- tsurud root user create admin@admin.com# CHANGE IT TO YOUR ADMIN USER #
-```
-
-Use Port-forward to access tsuru and ingress controller:
-
-Use to make a specific kubernetes api request. That means the system
-running it needs access to the API server, and any traffic will get
-tunneled over a single HTTP connection:
+## Install tsuru
 
 ``` bash
-$ kubectl port-forward --namespace tsuru-system svc/tsuru-api 8080:80 &
-$ kubectl port-forward --namespace tsuru-system svc/tsuru-ingress-nginx-controller 8890:80 &
+helm repo add tsuru https://tsuru.github.io/charts
+helm repo update
+
+helm install tsuru tsuru/tsuru-stack \
+  --create-namespace --namespace tsuru-system \
+  --set tsuru-api.image.tag=1.34.0
 ```
 
-Obs: If you specified a port when you installed helm it will have to use
-the same port in tsuru-ingress-nginx-controller.
-
-Add the localhost to tsuru target and log in:
+Wait until every pod in `tsuru-system` is `Running`:
 
 ``` bash
-$ tsuru target-add default http://localhost:8080 -s
-$ tsuru login
+kubectl get pods -n tsuru-system -w
 ```
 
-Create one team:
+## Create the first administrator
 
 ``` bash
-$ tsuru team create admin
+kubectl exec -it -n tsuru-system deploy/tsuru-api -- tsurud root-user-create admin@example.com
 ```
 
-Build Platforms:
+Use your own e-mail. The command prompts for a password and gives the user every permission,
+see [Authentication](../admin_guides/authentication.md#bootstrapping-the-first-administrator).
+
+## Reach the API and the apps
+
+Port-forward the API server and the ingress controller:
 
 ``` bash
-$ tsuru platform add python
-$ tsuru platform add go
+kubectl port-forward --namespace tsuru-system svc/tsuru-api 8080:80 &
+kubectl port-forward --namespace tsuru-system svc/tsuru-ingress-nginx-controller 8890:80 &
 ```
 
-Create and Deploy tsuru-dashboard app:
+Apps get addresses under `cloud.127.0.0.1.nip.io:8890` (`kubernetes-router.ingressExpose`
+in the chart values). If you change the port there, change the port-forward too.
+
+Add the target and log in:
 
 ``` bash
-$ tsuru app create dashboard
-$ tsuru app deploy -a dashboard --image tsuru/dashboard
+tsuru target add default http://localhost:8080 -s
+tsuru login admin@example.com
 ```
 
-Create an app to test:
+## Create a team and install platforms
 
 ``` bash
-$ mkdir example-go
-$ cd example-go
-$ git clone https://github.com/tsuru/platforms.git
-$ cd platforms/examples/go
-$ tsuru app create example-go go
-$ tsuru app deploy -a example-go .
+tsuru team create admin
+tsuru platform add python
+tsuru platform add go
 ```
 
-Check the app info and get the url:
+Platforms are built inside the cluster by deploy-agent; see
+[Managing platforms](../admin_guides/managing_platforms.md) and the
+[platforms overview](../user_guides/platforms.md).
+
+## Deploy a test app
 
 ``` bash
-$ tsuru app info -a example-go
+git clone https://github.com/tsuru/platforms.git
+cd platforms/examples/go
+tsuru app create example-go go
+tsuru app deploy -a example-go .
+tsuru app info -a example-go
 ```
+
+Open the address shown by `app info` in your browser.

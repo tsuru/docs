@@ -1,32 +1,22 @@
 # Deploy Node.js applications
 
-
 ## Overview
 
-Node.js is a widely recognized runtime, known for its ease of use, low learning curve, and large community. Deploying a Node.js application on Tsuru is an effortless task. You should have a package.json, Procfile, and tsuru.yaml.
-
+A Node.js app on tsuru needs a `package.json`, a `Procfile` and usually a `tsuru.yaml`. The
+[`nodejs` platform](platforms.md) installs Node with nvm and your dependencies with npm or yarn.
 
 ## Creating the app
 
-To create an app, you use the command app create:
-
 ``` bash
-$ tsuru app create <app-name> <app-platform>
-```
-
-For NodeJS, the app platform is, guess what, nodejs! Let’s be over creative and develop a never-developed tutorial-app: a myapp
-
-``` bash
-$ tsuru app create myapp nodejs
+tsuru app create myapp nodejs
 ```
 
 ## Application code
 
-Basically we need to write 3 files and put on project directory: Procfile, package.json and tsuru.yaml
-
 ### Procfile
 
-This file is useful to identify how to execute your application, each line represents a tsuru process, usually process named web is responsabile to receive requests, important NOTE the app may listen requests following PORT envvar OR use the default port 8888
+Each line is a tsuru process; `web` receives HTTP traffic and must listen on the `PORT` env var
+(default `8888`). See [Procfile](procfile.md).
 
 ```
 web: node app.js
@@ -34,68 +24,65 @@ web: node app.js
 
 ### package.json
 
-This file is used to pick your nodejs version and install your dependencies.
-
-```
+```json
 {
   "name": "hello-world",
-  "description": "hello world test on tsuru",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
     "express": "4.21.x"
   },
   "engines": {
-    "node": "20.17.0"
+    "node": "22"
   }
 }
 ```
 
-### package-lock.json (strong recommended)
+### Node version
 
-The package-lock.json file is crucial in Node.js projects for ensuring consistent and reproducible builds. Here's why generating and maintaining this file is important: ensures consistent dependency versions, speeds Up installations and improves security
+The platform reads the version from the first of these that exists: `.nvmrc`, `.node-version`,
+`engines.node` in `package.json`. Any string nvm accepts works (`22`, `22.11.0`, `lts/jod`). With
+none of them the platform installs the **current LTS** (`nvm install --lts`), which changes over
+time, so pin a version for reproducible builds.
 
-## yarn.lock (optional)
+### Dependencies: npm or yarn
 
-first we check if there is a `yarn.lock` file in the root of your files. If so, we use [yarn](https://yarnpkg.com/); otherwise, we use [npm](https://www.npmjs.com/package/npm).
+- With a `yarn.lock` the platform uses **yarn**. The yarn version comes from `engines.yarn`,
+  `dependencies.yarn` or `devDependencies.yarn` in `package.json`, defaulting to 1.21.1. There is no
+  pnpm support.
+- Otherwise it runs `npm install`. Commit `package-lock.json` for reproducible installs.
+
+Dependencies are installed with `--production` unless `NPM_CONFIG_PRODUCTION` is set to any value:
+
+``` bash
+tsuru env set -a myapp NPM_CONFIG_PRODUCTION=false
+```
+
+`node_modules` is kept between deploys when `package.json`, `package-lock.json` and `yarn.lock` did
+not change, and always kept when `KEEP_NODE_MODULES` is set.
+
+Mirrors: `NPM_REGISTRY` sets the package registry for npm and yarn (lockfile URLs are rewritten);
+`NVM_NODEJS_ORG_MIRROR` sets where Node binaries are downloaded from.
 
 ### tsuru.yaml
 
-tsuru.yaml is used to tsuru specific settings, this may be the initial settings:
+Define the healthcheck so the router only sends traffic to ready units, see [tsuru.yaml](tsuru_yaml.md):
 
-```
+```yaml
 healthcheck:
   path: /
 ```
 
-### Operating system dependencies: requirements.apt (optional)
+### Operating system packages (optional)
 
-list of ubuntu dependencies that will be installed, useful to install tools required for build process
+`requirements.apt` lists Ubuntu packages, one per line, installed before `npm install`, for
+example `gcc` for native modules.
 
-example:
-```
-gcc
-```
+## Deploy
 
-
-## Deploy application
-
-Let's deploy our application with command
-
-```
+``` bash
 tsuru app deploy -a myapp .
 ```
 
-## Install development dependencies
-
-If you want to also install development dependencies, set the environment variable NPM_CONFIG_PRODUCTION=false
-
-example:
-
-```
-tsuru env set -a myapp NPM_CONFIG_PRODUCTION=false
-```
-
-## package.json, .nvmrc or .node-version
-
-The platform looks for desired node.js version in three places: .nvmrc, .node-version and package.json, the first value encountered will be used to instal the target version.
+A full working example is in
+[tsuru/platforms `examples/nodejs`](https://github.com/tsuru/platforms/tree/master/examples/nodejs).
