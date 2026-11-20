@@ -41,11 +41,11 @@ There is no Redis or any queue service: tsuru keeps everything in MongoDB. Mongo
 registry and ingress-nginx can each be disabled (`mongodb.enabled`, `registry.enabled`,
 `ingress-nginx.enabled=false`) when you bring your own.
 
-!!! warning "The chart pins an old tsuru-api"
+!!! note "Chart version vs. tsuru version"
 
-    `tsuru-stack` 0.8.11 depends on `tsuru-api` chart 0.3.12, whose default image is
-    tsuru-api **1.28.3**. These docs describe tsuru 1.34. Override the image tag on install,
-    as the commands below do, until the chart catches up.
+    `tsuru-stack` 0.8.13 (November 2026) depends on `tsuru-api` chart 0.4.1, whose default image
+    is tsuru-api **1.33.0**. These docs describe tsuru 1.34, so the commands below override the
+    image tag. Drop the `--set` to stay on the chart's default.
 
 Because `tsurud` runs inside the cluster it manages, it registers that cluster by itself: on
 the first start with no clusters configured it creates a cluster named `local` (default, with

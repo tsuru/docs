@@ -33,8 +33,8 @@ runs in as cluster `local` with a default pool `local` on first start, so no `cl
       fine for a trial. For anything else disable it (`--set registry.enabled=false`) and point
       `tsuru-api.tsuruConfig.clusters.defaults.registry` at Artifact Registry or another TLS
       registry, with `registry-insecure` removed.
-    - `tsuru-stack` 0.8.11 defaults to tsuru-api **1.28.3**; pass `--set tsuru-api.image.tag=1.34.0`
-      to get the version these docs describe.
+    - `tsuru-stack` 0.8.13 defaults to tsuru-api **1.33.0**; the commands pass
+      `--set tsuru-api.image.tag=1.34.0` to get the version these docs describe.
 
 ## Install tsuru
 
