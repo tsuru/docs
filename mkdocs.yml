@@ -57,6 +57,7 @@ nav:
   - Deploying:
     - Overview: ./user_guides/deploying.md
     - Using Dockerfile: ./user_guides/deploy_using_dockerfile.md
+    - Platforms overview: ./user_guides/platforms.md
     - GO apps: ./user_guides/deploy_go_apps.md
     - Python apps: ./user_guides/deploy_python_apps.md
     - Node.js apps: ./user_guides/deploy_nodejs_apps.md
@@ -144,5 +145,6 @@ nav:
 - FAQ: ./faq.md
 
 - Contributing:
+  - Overview: ./contributing/index.md
   - Development environment:
-    - Running development enviroment with Docker Compose: ./contributing/docker-compose.md
+    - Running development environment with Docker Compose: ./contributing/docker-compose.md

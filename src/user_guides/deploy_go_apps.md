@@ -2,17 +2,11 @@
 
 ## Overview
 
-Lauching Go applications with Tsuru is remarkably simple. basically you need to maintain well-known files: main.go, go.mod, go.sum and tsuru.yaml
+A Go app on tsuru needs `go.mod`, your `.go` files and optionally a `Procfile` and `tsuru.yaml`.
+The [`go` platform](platforms.md) downloads the toolchain, runs `go mod download` and builds your
+binaries at deploy time.
 
 ## Creating the app
-
-To create an app, you use the command app create:
-
-``` bash
-tsuru app create <app-name> <app-platform>
-```
-
-For GO, the app platform is, guess what, go! Let’s be over creative and develop a never-developed tutorial-app: a myapp
 
 ``` bash
 tsuru app create helloworld go
@@ -20,9 +14,7 @@ tsuru app create helloworld go
 
 ## Application code
 
-A simple web application in Go main.go:
-
-
+A minimal `main.go`:
 
 ``` golang
 package main
@@ -37,14 +29,11 @@ func main() {
     http.HandleFunc("/", hello)
     http.HandleFunc("/healthcheck", healthcheck)
 
-
     port := os.Getenv("PORT")
     if port == "" {
         port = "8888"
     }
-
-    err := http.ListenAndServe(":" + port, nil)
-    if err != nil {
+    if err := http.ListenAndServe(":"+port, nil); err != nil {
         panic(err)
     }
 }
@@ -58,62 +47,63 @@ func healthcheck(res http.ResponseWriter, req *http.Request) {
 }
 ```
 
-To create go.mod file:
+Create `go.mod` (replace the module path with your repository):
 
 ``` bash
 go mod init github.com/tsuru/helloworld
+go mod tidy
 ```
 
-please update `github.com/tsuru/helloworld` to the correct git repository
-
-
-Create the tsuru.yaml file:
+And a `tsuru.yaml`, see [tsuru.yaml](tsuru_yaml.md):
 
 ``` yaml
 healthcheck:
   path: /healthcheck
 ```
 
-## Deploy
+### Go version
 
-You can just run tsuru app deploy command and your project will be deployed:
+The toolchain version is chosen as follows:
+
+1. the `GO_VERSION` environment variable, if set (`tsuru env set -a helloworld GO_VERSION=1.23`);
+2. otherwise the `go` directive in `go.mod`.
+
+An exact match of a published release is used when it exists. Otherwise the newest **stable**
+release with that prefix is used (`1.23` picks the latest `1.23.x`; `1.23.x` works too). If nothing
+matches, the latest stable Go is installed and the deploy log says so.
+
+### Build and Procfile
+
+- Without a `Procfile` the platform runs `go build -o tsuru-app` in the project root and uses its
+  default Procfile, `web: ./tsuru-app`.
+- With a `Procfile` it runs `go install ./...`, so every `main` package under the module ends up on
+  `PATH` and the Procfile refers to binaries by name (see below).
+- A `vendor/` directory switches the build to `-mod=vendor`.
+
+## Deploy
 
 ``` bash
 tsuru app deploy -a helloworld .
 ```
 
-tsuru will compile and run the application automatically.
+tsuru compiles and starts the application; `tsuru app info -a helloworld` shows its address.
 
-It’s done! Now we have a simple go project deployed on tsuru.
+## Multiple processes
 
-Now we can access your app in the URL displayed in app info (“helloworld.192.168.50.4.nip.io” in this case).
-
-
-# Deploy multiple processes application
-
-Teams often design their applications to distribute responsibilities across multiple processes, such as an API and a worker. While these processes might share the same repository, they typically have different entry points.
-
-Our GO platform simplifies handling this scenario, but it's essential to standardize your application.
-
-## Entry points
-
-You must organize the entry points in the filesystem to look like this:
+Teams often split an application into an API and a worker that share one repository. Put one
+`main` package per binary under `cmd/`:
 
 ```
-
-# to create myapp-api binary
-cmd/myapp-api/main.go
-
-
-# to create myapp-worker binary
-cmd/myapp-worker/main.go
+cmd/myapp-api/main.go      # builds the myapp-api binary
+cmd/myapp-worker/main.go   # builds the myapp-worker binary
 ```
 
-you can put every shared package outside of directory cmd.
+Shared packages live outside `cmd/`. Reference each binary in the `Procfile`:
 
-
-for each binary you need to specify on `Procfile`
 ```
 web: myapp-api
 worker: myapp-worker
 ```
+
+A full working example is in
+[tsuru/platforms `examples/go`](https://github.com/tsuru/platforms/tree/master/examples/go).
