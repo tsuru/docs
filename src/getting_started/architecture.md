@@ -79,13 +79,18 @@ Its reference implementation, kubernetes-router, creates a Kubernetes `Service` 
 | Source code: | :simple-github: [tsuru/kubernetes-router] |
 | API specification (Swagger 2.0): | :simple-swagger: [Tsuru Router API](../reference/router_api.md) |
 
-## Ingress controller
+## Ingress or Gateway API controller
 
-The component that actually receives app traffic. kubernetes-router only writes `Ingress` objects; an ingress controller running in the cluster (ingress-nginx in the Helm chart, class `tsuru-nginx`) turns them into a reachable endpoint. Any controller the router mode supports can be used.
+The component that actually receives app traffic. kubernetes-router only writes the routing objects; a controller running in the cluster turns them into a reachable endpoint. Which controller you run depends on the router mode:
+
+- **Ingress controller** (`ingress` and `ingress-nginx` modes): the router writes `Ingress` objects. The Helm chart installs ingress-nginx with class `tsuru-nginx`.
+- **Gateway API controller** (`gateway-api` mode): the router writes `HTTPRoute` objects attached to a `Gateway`, so any [Gateway API] implementation (Envoy Gateway, Cilium, Istio, cloud load balancer controllers, ...) can replace the ingress controller.
+- **Istio** (`istio-gateway` mode): the router writes Istio `Gateway` and `VirtualService` objects.
 
 | | |
 |-|-|
-| Source code: | :simple-github: [kubernetes/ingress-nginx] |
+| Source code: | :simple-github: [kubernetes/ingress-nginx] (default in the Helm chart) |
+| Specification: | [Gateway API] |
 
 ## Kubernetes cluster
 
@@ -110,3 +115,4 @@ The [Kubernetes] cluster where Tsuru API should run the Tsuru workloads[^1] on.
 [tsuru/kubernetes-router]: https://github.com/tsuru/kubernetes-router
 [kubernetes/kubernetes]: https://github.com/kubernetes/kubernetes
 [kubernetes/ingress-nginx]: https://github.com/kubernetes/ingress-nginx
+[Gateway API]: https://gateway-api.sigs.k8s.io/
