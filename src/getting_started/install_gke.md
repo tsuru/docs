@@ -59,7 +59,7 @@ Let's assign the correct IP to default router:
 
 ``` bash
 $ export NGINX_HOST=$(kubectl get svc -n tsuru-system tsuru-ingress-nginx-controller -o 'jsonpath={.status.loadBalancer.ingress[].ip}')
-$ helm upgrade tsuru tsuru/tsuru-stack --namespace tsuru-system -f values.yaml --set kubernetes-router.ingressExpose.domain=cloud.$NGINX_HOST.nip.io --set kubernetes-router.ingressExpose.port=80
+$ helm upgrade tsuru tsuru/tsuru-stack --namespace tsuru-system --set kubernetes-router.ingressExpose.domain=cloud.$NGINX_HOST.nip.io --set kubernetes-router.ingressExpose.port=80
 ```
 
 Create one team:

@@ -32,10 +32,11 @@ source .env
 
 This command plays a important role by configuring network interfaces and generating config files according to your setup, so you are able to up/down services easily with Docker Compose commands.
 
-To run all Tsuru service components in background mode, run:
+To run all Tsuru service components in background mode, run (the `tsuru-api` service sits
+behind the `tsurud-api` Compose profile, so it only starts when the profile is enabled):
 
 ``` bash
-docker-compose up -d
+docker compose --profile tsurud-api up -d
 ```
 
 If everything goes well, you have a fresh installation of Tsuru.
@@ -45,7 +46,7 @@ For the purpose of this guide, the admin user will be identified as `admin@examp
 However, feel free to use your own email if you prefer.
 
 ``` bash
-docker-compose exec tsuru-api tsurud root user create admin@example.com
+docker compose exec tsuru-api tsurud root user create admin@example.com
 # it will prompt you to create an password
 ```
 
@@ -103,7 +104,7 @@ tsuru target remove development
 Shutting down Docker Compose services:
 
 ``` bash
-docker-compose down --volumes --rmi all
+docker compose --profile tsurud-api down --volumes --rmi all
 ```
 
 Removing the local Kubernetes cluster:
@@ -117,7 +118,7 @@ minikube delete --all
 
 * [Managing teams](../admin_guides/managing_teams.md)
 * [Managing pools](../admin_guides/managing_pools.md)
-* [Managing users and permissions](https://docs.tsuru.io/stable/managing/users-and-permissions.html)
+* [Managing roles](../admin_guides/managing_roles.md)
 * [Managing platforms](../admin_guides/managing_platforms.md)
 * Deploy an app:
     * [Deploy an app with Dockerfile](../user_guides/deploy_using_dockerfile.md)
@@ -130,7 +131,7 @@ During the development cycle, you can rebuild and relaunch the Tsuru API with yo
 To do so, just run the code below:
 
 ``` bash
-docker-compose up --build tsuru-api
+docker compose --profile tsurud-api up --build tsuru-api
 ```
 
 ## Troubleshooting
@@ -144,7 +145,7 @@ You can test the connectivity by running it from Tsuru:
 KUBECONFIG=~/.kube/config
 KUBERNETES_ADDRESS=$(yq -r '.clusters[] | select(.name == "minikube") | .cluster.server' ${KUBECONFIG})
 
-docker-compose exec tsuru-api wget --no-check-certificate -qO- ${KUBERNETES_ADDRESS}/healthz
+docker compose exec tsuru-api wget --no-check-certificate -qO- ${KUBERNETES_ADDRESS}/healthz
 ```
 
 If you don't see an output like `ok` as result of the above command, you might need to create your cluster using a bridge network.

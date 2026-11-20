@@ -52,7 +52,7 @@ processes:
 | Option | Description | Required |
 |--------|-------------|----------|
 | `name` | The name of the process | Yes |
-| `command` | The command to run the process | Yes |
+| `command` | The command to run the process. When omitted, the command comes from the Procfile entry with the same name, or from the image `CMD` | No |
 | `healthcheck` | Healthcheck configuration for the process | No |
 | `startupcheck` | Startupcheck configuration for the process | No |
 
@@ -118,7 +118,6 @@ startupcheck:
   allowed_failures: 0
   interval_seconds: 10
   timeout_seconds: 60
-  deploy_timeout_seconds: 180
 ```
 
 ### Command-based startup check

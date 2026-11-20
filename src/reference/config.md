@@ -43,10 +43,6 @@ Path to the private key file. Required if `use-tls` is true.
 
 Prevents invalid certificates from being offered to clients. Default: `false`.
 
-### tls:auto-reload:interval
-
-Frequency for reloading TLS certificates. Use Go duration format (e.g., `1h`, `60m`). Default: `0` (disabled).
-
 ### server:read-timeout
 
 Maximum duration for reading requests. Default: `0` (no timeout).
@@ -113,11 +109,11 @@ SMTP authentication password.
 
 ## Authentication configuration
 
-tsuru supports `native`, `oauth`, and `saml` authentication schemes.
+tsuru supports `native`, `oauth`, `oidc` and `multi` authentication schemes.
 
 ### auth:scheme
 
-Authentication scheme. Default: `native`. Options: `native`, `oauth`, `oidc`, `saml`.
+Authentication scheme. Default: `native`. Options: `native`, `oauth`, `oidc`, `multi`.
 
 ### auth:user-registration
 
@@ -125,7 +121,7 @@ Enable user registration. Default: `false`.
 
 ### auth:hash-cost
 
-Bcrypt hash cost (4-31). Higher is more secure but slower. Only for `native` scheme.
+Bcrypt hash cost (4-31). Higher is more secure but slower. Default: `10`. Only for `native` scheme.
 
 ### auth:token-expire-days
 
@@ -149,23 +145,6 @@ Used when `auth:scheme` is `oauth`. See [RFC 6749](http://tools.ietf.org/html/rf
 | `auth:oauth:info-url` | User info URL (expects JSON with `email` field) |
 | `auth:oauth:collection` | Database collection for tokens. Default: `oauth_tokens` |
 | `auth:oauth:callback-port` | Callback port for authorization |
-
-### SAML configuration (auth:saml)
-
-Used when `auth:scheme` is `saml`. See [SAML V2.0 specification](http://saml.xml.org/saml-specifications).
-
-| Setting | Description |
-|---------|-------------|
-| `auth:saml:sp-publiccert` | Service provider public certificate path |
-| `auth:saml:sp-privatekey` | Service provider private key path |
-| `auth:saml:idp-ssourl` | Identity provider URL |
-| `auth:saml:sp-display-name` | SP display name. Default: `Tsuru` |
-| `auth:saml:sp-description` | SP description |
-| `auth:saml:idp-publiccert` | Identity provider public certificate |
-| `auth:saml:sp-entityid` | Service provider entity ID |
-| `auth:saml:sp-sign-request` | SP signs requests. Default: `false` |
-| `auth:saml:idp-sign-response` | IDP signs responses. Default: `false` |
-| `auth:saml:idp-deflate-encoding` | Enable deflate encoding. Default: `false` |
 
 ## Quota management
 
@@ -195,7 +174,7 @@ Disable syslog. Default: `false`.
 
 ### log:syslog-tag
 
-Syslog tag. Default: `tsr`.
+Syslog tag. Default: `tsurud`.
 
 ### log:use-stderr
 
@@ -209,9 +188,10 @@ Router configuration uses the format `routers:<router name>`.
 
 Set as default router. Default: `false`.
 
-### routers:\<name\>:domain
+### routers:\<name\>:type
 
-Router domain. Apps will be accessible at `http://<app-name>.<domain>`.
+Router implementation. **Required**. Use `api` for routers that implement the
+[Router API](router_api.md), such as [kubernetes-router](https://github.com/tsuru/kubernetes-router).
 
 ### routers:\<name\>:api-url
 
@@ -220,6 +200,11 @@ Router manager API URL.
 ### routers:\<name\>:debug
 
 Enable debug mode for router.
+
+### routers:\<name\>:multi-cluster
+
+Send the pool and cluster headers (`X-Tsuru-Pool-Name`, `X-Tsuru-Cluster-Name`, ...) on every
+request to the router API, so one router can serve several clusters. Default: `false`.
 
 ### routers:\<name\>:headers
 
@@ -238,6 +223,8 @@ headers:
 listen: "0.0.0.0:8080"
 debug: true
 host: http://<machine-public-addr>:8080
+# without this line tsurud expects the legacy `docker:` keys and refuses to start
+provisioner: kubernetes
 
 auth:
   user-registration: true

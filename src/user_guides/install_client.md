@@ -74,7 +74,7 @@ As Tsuru CLI's source is written in Golang, building it from the source code req
 After doing that, you only need to run the below command to build and install Tsuru CLI from the source:
 
 ``` bash
-go install github.com/tsuru/tsuru-client/cmd/tsuru@latest
+go install github.com/tsuru/tsuru-client/tsuru@latest
 ```
 
 Ensure that you add the Go's bin directory to the system's path (`$PATH`), as shown below.

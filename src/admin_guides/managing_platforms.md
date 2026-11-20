@@ -28,7 +28,7 @@ tsuru platform add python
 ```
 
 If your application is not currently supported by the platforms above,
-you can create a new platform. See :doc:`creating a platform</managing/create-platform>`
+you can create a new platform. See [creating a platform from scratch](#creating-a-platform-from-scratch)
 for more information.
 
 

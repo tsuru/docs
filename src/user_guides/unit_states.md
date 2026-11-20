@@ -31,9 +31,9 @@ The unit state follows this lifecycle:
    deploy                             |                          |
      |                                |                          |
      ↓           assigned             ↓                          |
-+---------+      to node       +----------+                 +---------+  healthcheck ok   +-------+
-| created | ----------------→  | starting | --------------→ | started | ----------------→ | ready |
-+---------+                    +----------+                 +---------+                   +-------+
++---------+      to node       +----------+                 +---------+
+| created | ----------------→  | starting | --------------→ | started |
++---------+                    +----------+                 +---------+
                                     |                           ↑ |
                                     |                           | |
                                     ↓                           | |
@@ -50,6 +50,10 @@ The unit state follows this lifecycle:
 | **building** | Unit is being provisioned by the provisioner (e.g., during deployment) |
 | **starting** | Container has been started |
 | **started** | Unit is up and running |
-| **ready** | Unit is up, running, and healthcheck is passing |
 | **error** | Unit failed to start due to an application error |
 | **stopped** | Unit has been stopped |
+| **succeeded** | Unit finished successfully (jobs and one-off processes) |
+
+`ready`, as shown by `tsuru app info`, is not a state of its own. It is displayed for a
+`started` unit whose readiness check (the `healthcheck` in `tsuru.yaml`) is passing, which
+is also when the unit receives traffic from the router.

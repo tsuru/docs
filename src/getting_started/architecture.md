@@ -24,7 +24,7 @@ It's responsible for almost everything since Tsuru workloads[^1] creation until 
 ## MongoDB
 
 The datastore service used by Tsuru API server to store the Tsuru workloads[^1] expected state, events and so on.
-Currently, it must a [MongoDB] server implementation on 4.x version.
+It must be a [MongoDB] server, version 6 or newer (the Helm chart ships MongoDB 8).
 
 | | |
 |-|-|
@@ -84,7 +84,7 @@ The [Kubernetes] cluster where Tsuru API should run the Tsuru workloads[^1] on.
 [OCI distribution spec]: https://github.com/opencontainers/distribution-spec
 [Kubernetes]: https://kubernetes.io/
 
-[mongodb/mongo]: https://github.com/distribution/distribution
+[mongodb/mongo]: https://github.com/mongodb/mongo
 [distribution/distribution]: https://github.com/distribution/distribution
 [tsuru/deploy-agent]: https://github.com/tsuru/deploy-agent
 [moby/buildkit]: https://github.com/moby/buildkit
