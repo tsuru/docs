@@ -50,7 +50,7 @@ With a team created, you can add/remove users to this team by managing users rol
 
 ## Team quota
 
-Teams have a quota related to the total number of units all apps/jobs under this team management are able to have. You can check and change those values as needed
+Teams have a quota on the number of apps and jobs they can own (each app or job counts as one; units are not counted). The default comes from `quota:apps-per-team` in `tsuru.conf`. You can check and change the limit per team as needed
 
 ### Checking quota
 

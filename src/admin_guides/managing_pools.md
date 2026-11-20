@@ -2,7 +2,7 @@
 
 ## Overview
 
-Pool is used by provisioner to group applications to run on a specific cluster and may use a dedicated nodes. in practical terms is the target namespace and the target cluster for an application.
+Pool is used by provisioner to group applications to run on a specific cluster. In practical terms it is the target namespace and the target cluster for an application.
 
 Tsuru has three types of pool: team, public and default.
 
@@ -62,7 +62,7 @@ If you want a default pool, you can create it with:
     ```bash
     $ tsuru pool add pool1 --provisioner kubernetes --default
 
-    # to override the default opol
+    # to override the current default pool
     $ tsuru pool add pool1 --provisioner kubernetes --default -f
     ```
 
@@ -96,8 +96,8 @@ when you have more than one kubernetes cluster, it's necessary to associate pool
 
     ```bash
     resource "tsuru_cluster_pool" "cluster-pool" {
-      cluster = "pool2"
-      pool    = "cluster2"
+      cluster = "cluster2"
+      pool    = "pool2"
     }
     ```
 
@@ -158,10 +158,13 @@ $ tsuru pool remove pool1
 ```
 
 
-## Moving apps between pools and teams
+## Changing the team owner of an app
 
-You can move apps from poolA to poolB and from teamA to teamB even when they dont have permission to see each other’s pools, this is made by using tsuru app update:
+An app can be handed to another team even when the teams cannot see each other's pools:
 
 ```bash
-$ tsuru app update --app <app> --team-owner <teamB> --pool <poolB>
+$ tsuru app update --app <app> --team-owner <teamB>
 ```
+
+The pool of an app cannot be changed after creation. To move an app to another pool,
+create a new app in the target pool and deploy it there.

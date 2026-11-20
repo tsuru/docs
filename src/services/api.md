@@ -7,7 +7,7 @@ tsuru sends requests to the service API for the following actions:
 - Bind an app to the service instance (`tsuru service-instance-bind`)
 - Unbind an app from the service instance (`tsuru service-instance-unbind`)
 - Destroy the service instance (`tsuru service-instance-remove`)
-- Check the status of the service instance (`tsuru service-instance-status`)
+- Check the status of the service instance (shown by `tsuru service instance info`)
 - Display additional info (`tsuru service-info` and `tsuru service-instance-info`)
 
 ## API Specification
@@ -117,18 +117,8 @@ description=new-description&tag=tag1&tag=tag2&team=new-team-owner&plan=new-plan
 
 ## Binding an app to a service instance
 
-tsuru has two bind endpoints:
-
-### Unit binding: `POST /resources/<instance-name>/bind`
-
-Called every time an app adds a unit. Parameters:
-- `app-host`: Host where the app is accessible
-- `app-name`: Name of the app
-- `unit-host`: Address of the unit
-
-### App binding: `POST /resources/<instance-name>/bind-app`
-
-Called once when an app is bound to a service. Parameters:
+When an app is bound to a service instance, tsuru calls `POST /resources/<instance-name>/bind-app`
+once. Parameters:
 - `app-host`: Host where the app is accessible
 - `app-name`: Name of the app
 
@@ -165,13 +155,7 @@ Example response:
 
 ## Unbinding an app from a service instance
 
-### Unit unbinding: `DELETE /resources/<instance-name>/bind`
-
-Called every time an app removes a unit.
-
-### App unbinding: `DELETE /resources/<instance-name>/bind-app`
-
-Called once when the binding is removed.
+tsuru calls `DELETE /resources/<instance-name>/bind-app` once when the binding is removed.
 
 Example request:
 
@@ -217,7 +201,7 @@ Authorization: Basic dXNlcjpwYXNzd29yZA==
 
 **Endpoint:** `GET /resources/<instance-name>/status`
 
-Triggered by `tsuru service-instance-status mysql mysql_instance`.
+Triggered by `tsuru service instance info mysql mysql_instance`.
 
 Example request:
 

@@ -72,8 +72,6 @@ Create the tsuru.yaml file:
 ``` yaml
 healthcheck:
   path: /healthcheck
-  method: GET
-  status: 200
 ```
 
 ## Deploy

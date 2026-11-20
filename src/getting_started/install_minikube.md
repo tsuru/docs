@@ -16,7 +16,7 @@ let\'s get started. To create a local Kubernetes cluster using minikube,
 run the command:
 
 ``` bash
-minikube start —-kubernetes-version=v1.33.0
+minikube start --kubernetes-version=v1.33.0
 ```
 
 This example we use the docker driver to create a vm. If you want to use
@@ -30,7 +30,8 @@ available.
 -   2 CPUs or more
 -   12GB of free memory
 -   20GB of free disk space
--   Installing Helm
+
+## Installing Helm
 
 Download a release of the [Helm
 client](https://github.com/helm/helm/releases). With helm installed,

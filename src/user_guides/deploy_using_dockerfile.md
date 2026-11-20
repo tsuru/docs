@@ -40,12 +40,12 @@ On the other hand, when using a directory, the container file is implicitly chos
 
 In both cases, you can push the deployable file(s) to `tsuru app deploy` passing as command arguments (positional args in the end of command).
 Those files can either be regular files, directories or symbolic links.
-Thoses files will be available in the container image build context and you shoul pick them usin `COPY`/`ADD` directives inside the container image.
+Those files will be available in the container image build context and you should pick them using `COPY`/`ADD` directives inside the container image.
 
 ???+ tip "Excluding deployable files with ignore files (`.tsuruignore` and `.dockerignore`)"
 
     Please note that any deployable files can be excluded if they match a rule specified in the Tsuru ignore file (namely `.tsuruignore`) located in the current directory.
-    Furthermore, when deploying using a Dockerfile, the Tsuru client also takes into account the Docker ignore file (namely `.dockerfile`) in the current directory to exclude specific files.
+    Furthermore, when deploying using a Dockerfile, the Tsuru client also takes into account the Docker ignore file (namely `.dockerignore`) in the current directory to exclude specific files.
 
 ### Example
 
