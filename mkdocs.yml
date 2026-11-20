@@ -53,7 +53,9 @@ nav:
   - "Install on GKE": ./getting_started/install_gke.md
 - User guides:
   - Install client: ./user_guides/install_client.md
-  - App deploy:
+  - Client plugins and configuration: ./user_guides/plugins.md
+  - Deploying:
+    - Overview: ./user_guides/deploying.md
     - Using Dockerfile: ./user_guides/deploy_using_dockerfile.md
     - GO apps: ./user_guides/deploy_go_apps.md
     - Python apps: ./user_guides/deploy_python_apps.md
@@ -62,9 +64,17 @@ nav:
   - App configuration:
     - tsuru.yaml: ./user_guides/tsuru_yaml.md
     - Procfile: ./user_guides/procfile.md
+    - Environment variables: ./user_guides/environment_variables.md
+    - Metadata, labels and annotations: ./user_guides/app_metadata.md
+    - Autoscale: ./user_guides/autoscale.md
+  - Operating apps:
+    - Versions and rollback: ./user_guides/app_versions.md
+    - CNAMEs and certificates: ./user_guides/cnames_and_certificates.md
+    - Volumes: ./user_guides/volumes.md
     - Unit states: ./user_guides/unit_states.md
-  - Troubleshooting:
     - Recovering an application: ./user_guides/recovering_app.md
+  - Jobs and cronjobs: ./user_guides/jobs.md
+  - Using services: ./user_guides/service_instances.md
 
 - Admin guides:
   - Managing clusters: ./admin_guides/managing_clusters.md
