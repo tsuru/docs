@@ -130,6 +130,40 @@ role can only receive permissions compatible with the role's context type.
     selects every static permission; `global` makes the permissions in one
     role assignment apply to every matching resource.
 
+### Job and volume permissions
+
+Jobs and volumes have their own permission families. Both accept `global`,
+`team`, and `pool` contexts plus their own resource context (`job` or
+`volume`); only `job.create` and `volume.create` are limited to `global`,
+`team`, and (for volumes) `pool`, since the resource does not exist yet.
+
+| Permission | Grants |
+| --- | --- |
+| `job` | Every job action below |
+| `job.create` | Create a job (`team` or `global` context only) |
+| `job.read`, `job.read.events`, `job.read.logs` | Inspect a job, its events and its logs |
+| `job.update`, `job.update.events` | Change a job; cancel its events |
+| `job.deploy` | Deploy a new job image |
+| `job.run` | Trigger a job run manually (the resulting event is recorded with kind `job.trigger`) |
+| `job.unit`, `job.unit.kill` | Kill a running job unit |
+| `job.delete` | Remove a job |
+
+| Permission | Grants |
+| --- | --- |
+| `volume` | Every volume action below |
+| `volume.create` | Create a volume (`team`, `pool` or `global` context) |
+| `volume.read`, `volume.read.events` | Inspect a volume and its events |
+| `volume.update`, `volume.update.bind`, `volume.update.unbind` | Bind or unbind the volume to apps |
+| `volume.delete` | Remove a volume |
+
+Binding from the application side is still an application permission
+(`app.update.bind-volume`, `app.update.unbind-volume`).
+
+Certificate issuers are not under `app` either: `certissuer.set` and
+`certissuer.unset` (ancestor `certissuer`) are a separate family that accepts
+`app`, `team`, and `pool` contexts, so a role with the whole `app` family does
+not grant them.
+
 ### Dynamic service-action permissions
 
 Services with an enabled API manifest can declare named operations. Tsuru
@@ -161,6 +195,11 @@ tsuru role permission add acl-operator service-action.acl.rules.sync
 
 A single add request must contain either static permissions or dynamic
 permissions; do not mix both kinds in one command invocation.
+
+Service owners declare the operations with `tsuru service manifest set
+<service> <file>` and inspect them with `tsuru service manifest get`.
+`tsuru role info` lists a role's dynamic permissions together with its static
+ones.
 
 ## Roles and assignments
 
@@ -232,6 +271,11 @@ tsuru role update app-reader-restarter --context app
 tsuru role update app-reader-restarter --name app-operator
 ```
 
+Each field is guarded by its own global permission: `role.update.name`,
+`role.update.context.type`, and `role.update.description` (or an ancestor such
+as `role.update`). An administrator allowed to edit descriptions cannot change
+a role's context type without `role.update.context.type`.
+
 Changing a role affects its existing assignments. In particular, changing its
 context type changes how stored context values are interpreted. Review all
 assignments and permission compatibility before making this change.
@@ -260,7 +304,11 @@ tsuru role assign app-reader-restarter group:platform-engineers myteam
 
 Users receive permissions from both their direct role assignments and the
 roles assigned to their groups. Team tokens receive permissions from their own
-role assignments.
+role assignments. `tsuru role dissociate` accepts the same three target forms:
+
+```bash
+tsuru role dissociate app-reader-restarter group:platform-engineers myteam
+```
 
 For a non-global role, the context value is required and Tsuru validates that
 the referenced resource exists when the assignment is created. A global role
