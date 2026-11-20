@@ -48,7 +48,7 @@ time, so pin a version for reproducible builds.
 ### Dependencies: npm or yarn
 
 - With a `yarn.lock` the platform uses **yarn**. The yarn version comes from `engines.yarn`,
-  `dependencies.yarn` or `devDependencies.yarn` in `package.json`, defaulting to 1.21.1. There is no
+  `dependencies.yarn` or `devDependencies.yarn` in `package.json`, else a platform default. There is no
   pnpm support.
 - Otherwise it runs `npm install`. Commit `package-lock.json` for reproducible installs.
 

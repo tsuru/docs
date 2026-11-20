@@ -4,9 +4,8 @@ title: Installing Tsuru on Google Kubernetes Engine cluster with Helm
 
 # Installing Tsuru on Google Kubernetes Engine cluster with Helm {#installing_tsuru_gke}
 
-This guide installs tsuru on GKE with the `tsuru-stack` Helm chart. It was tested with Kubernetes
-v1.33.0; other versions should work, please report the ones that do not. You need `gcloud`,
-`kubectl`, `helm` and the [tsuru client](../user_guides/install_client.md) installed.
+This guide installs tsuru on GKE with the `tsuru-stack` Helm chart. You need `gcloud`, `kubectl`,
+`helm` and the [tsuru client](../user_guides/install_client.md) installed.
 
 ## Create the cluster
 
@@ -25,16 +24,14 @@ registry, deploy-agent with BuildKit, kubernetes-router and ingress-nginx. On GK
 ingress controller get `LoadBalancer` services with public IPs. `tsurud` registers the cluster it
 runs in as cluster `local` with a default pool `local` on first start, so no `cluster add` is needed.
 
-!!! warning "Registry and versions"
+!!! warning "Registry"
 
-    - The bundled registry speaks plain HTTP inside the cluster. The chart tells BuildKit and
-      tsuru to treat it as insecure, and the `registryAliases` DaemonSet rewrites `/etc/hosts` on
-      every node so the kubelet resolves `tsuru-registry.tsuru-system.svc.cluster.local`. This is
-      fine for a trial. For anything else disable it (`--set registry.enabled=false`) and point
-      `tsuru-api.tsuruConfig.clusters.defaults.registry` at Artifact Registry or another TLS
-      registry, with `registry-insecure` removed.
-    - `tsuru-stack` 0.8.13 defaults to tsuru-api **1.33.0**; the commands pass
-      `--set tsuru-api.image.tag=1.34.0` to get the version these docs describe.
+    The bundled registry speaks plain HTTP inside the cluster. The chart tells BuildKit and
+    tsuru to treat it as insecure, and the `registryAliases` DaemonSet rewrites `/etc/hosts` on
+    every node so the kubelet resolves `tsuru-registry.tsuru-system.svc.cluster.local`. This is
+    fine for a trial. For anything else disable it (`--set registry.enabled=false`) and point
+    `tsuru-api.tsuruConfig.clusters.defaults.registry` at Artifact Registry or another TLS
+    registry, with `registry-insecure` removed.
 
 ## Install tsuru
 
@@ -42,9 +39,7 @@ runs in as cluster `local` with a default pool `local` on first start, so no `cl
 helm repo add tsuru https://tsuru.github.io/charts
 helm repo update
 
-helm install tsuru tsuru/tsuru-stack \
-  --create-namespace --namespace tsuru-system \
-  --set tsuru-api.image.tag=1.34.0
+helm install tsuru tsuru/tsuru-stack --create-namespace --namespace tsuru-system
 ```
 
 Wait for the pods and for both load balancers to get an IP:

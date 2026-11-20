@@ -5,8 +5,7 @@ title: Installing Tsuru in a local Kubernetes cluster with Helm
 # Installing Tsuru in a local Kubernetes cluster with Helm {#installing_tsuru_local}
 
 This guide installs tsuru and everything it needs into a local [minikube](https://minikube.sigs.k8s.io/docs/start/)
-cluster with the `tsuru-stack` Helm chart. It was tested with Kubernetes v1.33.0; other versions
-should work, please report the ones that do not. You need `minikube`, `kubectl`, `helm` and the
+cluster with the `tsuru-stack` Helm chart. You need `minikube`, `kubectl`, `helm` and the
 [tsuru client](../user_guides/install_client.md) installed.
 
 ## Hardware requirements
@@ -18,7 +17,7 @@ should work, please report the ones that do not. You need `minikube`, `kubectl`,
 ## Create the cluster
 
 ``` bash
-minikube start --kubernetes-version=v1.33.0
+minikube start
 ```
 
 The example uses the docker driver; see the [minikube drivers](https://minikube.sigs.k8s.io/docs/drivers/)
@@ -31,7 +30,7 @@ for alternatives.
 | Component | Chart | Purpose |
 |---|---|---|
 | tsuru-api | `tsuru-api` | the API server (`tsurud`) |
-| MongoDB | bitnami `mongodb` (MongoDB 8) | tsuru's datastore |
+| MongoDB | bitnami `mongodb` | tsuru's datastore |
 | Container registry | `docker-registry` | stores app images, plain HTTP, in-cluster only |
 | deploy-agent + BuildKit | `deploy-agent` | builds app images |
 | kubernetes-router | `kubernetes-router` | exposes apps through ingress-nginx |
@@ -40,12 +39,6 @@ for alternatives.
 There is no Redis or any queue service: tsuru keeps everything in MongoDB. MongoDB, the
 registry and ingress-nginx can each be disabled (`mongodb.enabled`, `registry.enabled`,
 `ingress-nginx.enabled=false`) when you bring your own.
-
-!!! note "Chart version vs. tsuru version"
-
-    `tsuru-stack` 0.8.13 (November 2026) depends on `tsuru-api` chart 0.4.1, whose default image
-    is tsuru-api **1.33.0**. These docs describe tsuru 1.34, so the commands below override the
-    image tag. Drop the `--set` to stay on the chart's default.
 
 Because `tsurud` runs inside the cluster it manages, it registers that cluster by itself: on
 the first start with no clusters configured it creates a cluster named `local` (default, with
@@ -64,9 +57,7 @@ pull app images from the in-cluster registry by its service name.
 helm repo add tsuru https://tsuru.github.io/charts
 helm repo update
 
-helm install tsuru tsuru/tsuru-stack \
-  --create-namespace --namespace tsuru-system \
-  --set tsuru-api.image.tag=1.34.0
+helm install tsuru tsuru/tsuru-stack --create-namespace --namespace tsuru-system
 ```
 
 Wait until every pod in `tsuru-system` is `Running`:

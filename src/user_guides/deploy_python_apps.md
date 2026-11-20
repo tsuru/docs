@@ -3,8 +3,7 @@
 ## Overview
 
 A Python app on tsuru needs a `Procfile`, a dependency file and, optionally, a way to pin the
-Python version. Everything else is handled by the [`python` platform](platforms.md), based on
-Ubuntu 24.04.
+Python version. Everything else is handled by the [`python` platform](platforms.md).
 
 ## Creating the app
 

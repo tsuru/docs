@@ -33,7 +33,7 @@ is set. All specifications in this repository are written in Swagger 2.0, not Op
 The only datastore. Tsuru API server stores in it the expected state of Tsuru workloads[^1], users,
 teams, roles, tokens, clusters, pools, plans and the full event history. There is no queue or cache
 service (no Redis).
-It must be a [MongoDB] server, version 6 or newer (the Helm chart ships MongoDB 8).
+It must be a [MongoDB] server.
 
 | | |
 |-|-|

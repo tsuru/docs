@@ -10,8 +10,8 @@ Platforms are installed by administrators with `tsuru platform add <name>`
 ([Managing platforms](../admin_guides/managing_platforms.md)); `tsuru platform list` shows the ones
 available on your installation. The official images live in
 [tsuru/platforms](https://github.com/tsuru/platforms) and are published to Docker Hub as `tsuru/<name>`.
-Every one is based on `tsuru/base-platform:24.04` (Ubuntu 24.04), except `buildpack` which is based
-on herokuish.
+Every one is based on `tsuru/base-platform` (Ubuntu), except `buildpack` which is based on
+herokuish.
 
 ## Official platforms
 
@@ -21,17 +21,17 @@ on herokuish.
 | [`python`](https://github.com/tsuru/platforms/tree/master/python) | `Pipfile.lock` > `poetry.lock` > `uv.lock` > `PYTHON_VERSION` > `.python-version` > latest 3.x | `poetry.lock`, `uv.lock`, `Pipfile.lock`, `requirements.txt` or `setup.py` | [guide](deploy_python_apps.md) |
 | [`nodejs`](https://github.com/tsuru/platforms/tree/master/nodejs) | `.nvmrc` > `.node-version` > `engines.node` in `package.json` > current LTS | `yarn.lock` (yarn) else `package.json` (npm) | [guide](deploy_nodejs_apps.md) |
 | [`static`](https://github.com/tsuru/platforms/tree/master/static) | n/a (nginx from Ubuntu, `NGINX_PKG` selects the flavour) | none | serves the deployed directory; [guide](deploy_react_apps.md) |
-| [`ruby`](https://github.com/tsuru/platforms/tree/master/ruby) | `RUBY VERSION` in `Gemfile.lock` > `.ruby-version` > 3.1.6 | `Gemfile` via bundler | `RUBY_REPO`, `GEM_SOURCE` env vars for mirrors |
+| [`ruby`](https://github.com/tsuru/platforms/tree/master/ruby) | `RUBY VERSION` in `Gemfile.lock` > `.ruby-version` > platform default | `Gemfile` via bundler | `RUBY_REPO`, `GEM_SOURCE` env vars for mirrors |
 | [`java`](https://github.com/tsuru/platforms/tree/master/java) | platform image | `pom.xml` via maven, or a prebuilt jar | default Procfile starts Tomcat; `JAVA_MAX_MEMORY` |
-| [`php`](https://github.com/tsuru/platforms/tree/master/php) | `php.version` in `tsuru.yaml` (8.2 to 8.5 installed) | `composer.json` when `php.composer` is true | frontend `apache`/`nginx`, interpreter `fpm`/`mod_php`, `php.extensions` list |
+| [`php`](https://github.com/tsuru/platforms/tree/master/php) | `php.version` in `tsuru.yaml` | `composer.json` when `php.composer` is true | frontend `apache`/`nginx`, interpreter `fpm`/`mod_php`, `php.extensions` list |
 | [`perl`](https://github.com/tsuru/platforms/tree/master/perl) | platform image | `cpanfile.snapshot` > `cpanfile` via carton | |
-| [`lua`](https://github.com/tsuru/platforms/tree/master/lua) | platform image (Lua 5.3) | `tsuru-1.0-1.rockspec` via luarocks | |
-| [`ballerina`](https://github.com/tsuru/platforms/tree/master/ballerina) | platform image (Swan Lake 2201.13.1) | `bal build` | |
+| [`lua`](https://github.com/tsuru/platforms/tree/master/lua) | platform image | `tsuru-1.0-1.rockspec` via luarocks | |
+| [`ballerina`](https://github.com/tsuru/platforms/tree/master/ballerina) | platform image | `bal build` | |
 | [`buildpack`](https://github.com/tsuru/platforms/tree/master/buildpack) | detected by the buildpack | Heroku buildpacks through herokuish | for stacks without a dedicated platform |
 | [`scratch`](https://github.com/tsuru/platforms/tree/master/scratch) | n/a | none | bare Ubuntu, for shipping prebuilt binaries with a Procfile |
 
 Each platform's README in the repository is the authoritative description of its environment
-variables and files; the table summarizes them as of November 2026.
+variables, files and the runtime versions it ships.
 
 ## What every platform supports
 
