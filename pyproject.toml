@@ -8,8 +8,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 mkdocs = "^1.4.3"
-mkdocs-material = "^9.1.17"
+mkdocs-material = "^9.5"
 pymdown-extensions = "^10.0.1"
+mkdocs-swagger-ui-tag = "^0.7.1"
 
 [build-system]
 requires = ["poetry-core"]
