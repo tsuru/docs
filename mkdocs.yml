@@ -77,11 +77,18 @@ nav:
   - Using services: ./user_guides/service_instances.md
 
 - Admin guides:
+  - Operating the API server: ./admin_guides/operating_tsurud.md
+  - Authentication: ./admin_guides/authentication.md
+  - Tokens: ./admin_guides/managing_tokens.md
   - Managing clusters: ./admin_guides/managing_clusters.md
   - Managing pools: ./admin_guides/managing_pools.md
+  - Managing plans: ./admin_guides/managing_plans.md
+  - Managing routers: ./admin_guides/managing_routers.md
   - Managing platforms: ./admin_guides/managing_platforms.md
-  - Managing roles: ./admin_guides/managing_roles.md
   - Managing teams: ./admin_guides/managing_teams.md
+  - Managing roles: ./admin_guides/managing_roles.md
+  - Events, blocks and webhooks: ./admin_guides/events.md
+  - Observability: ./admin_guides/observability.md
 
 - References:
   - Tsuru Client:
