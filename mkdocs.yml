@@ -134,9 +134,11 @@ nav:
     - Tsuru API: ./reference/api.md
     - Service API: ./reference/service_api.md
     - Router API: ./reference/router_api.md
-  - Services:
+  - Building a service:
     - Building your service: ./services/build.md
     - Service API workflow: ./services/api.md
+    - Multi-cluster services: ./services/multi_cluster.md
+    - Service permissions manifest: ./services/permissions_manifest.md
     - TSURU_SERVICES variable: ./services/environment_variables.md
 
 - FAQ: ./faq.md
