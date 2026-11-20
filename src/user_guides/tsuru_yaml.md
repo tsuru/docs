@@ -26,6 +26,12 @@ hooks:
 | `restart:after` | Runs after each unit is restarted. Executes once per unit. |
 | `build` | Runs during deployment when the image is being generated. |
 
+### How hooks run
+
+- `restart:before` commands are joined with `&&` and prepended to the process command; the whole thing runs as `/bin/sh -lc ...`, so if a hook fails the process never starts.
+- `restart:after` commands are joined with `&&` and run as the container's Kubernetes `postStart` lifecycle hook (`sh -c`), in parallel with the process start.
+- `build` commands run inside the image build, so their output is baked into the image.
+
 ## Process configurations
 
 You can declare each process of your app in the tsuru.yaml file. This allows you to configure the command to run and the healthcheck/startupcheck for each process.
@@ -55,6 +61,12 @@ processes:
 | `command` | The command to run the process. When omitted, the command comes from the Procfile entry with the same name, or from the image `CMD` | No |
 | `healthcheck` | Healthcheck configuration for the process | No |
 | `startupcheck` | Startupcheck configuration for the process | No |
+
+### Precedence
+
+- When `processes:` is present, the top-level `healthcheck:` is ignored and the deploy prints a warning. Put the check under each process instead.
+- A `processes[]` entry overrides a Procfile entry with the same name. An entry without `command` takes its command from the Procfile. If neither a Procfile nor any `command` exists, tsuru creates a single `web` process from the image `ENTRYPOINT` and `CMD`.
+- Unknown healthcheck or startupcheck fields are not errors: the deploy prints `WARNING: invalid or deprecated healthcheck field ...` and ignores them. The old router-oriented fields `method`, `status`, `match`, `use_in_router` and `router_body` are among these.
 
 !!! note "Healthcheck vs Startupcheck"
     - **healthcheck**: Monitors ongoing health after deployment. If it fails, the unit may be restarted or marked as unhealthy (removed from the router until healthy again).
@@ -101,6 +113,13 @@ healthcheck:
 | `command` | Command to execute inside container. Exit 0 = healthy. Ignored if `path` is set. | - |
 | `interval_seconds` | Interval between health checks. | `10` |
 | `force_restart` | Restart unit after consecutive failures. Sets liveness probe in the Pod. | `false` |
+
+### How checks map to Kubernetes probes
+
+- `healthcheck` becomes the container's `readinessProbe`. With `force_restart: true` the same probe is also set as the `livenessProbe`.
+- `startupcheck` becomes the `startupProbe`.
+- `path` gets a leading `/` added if missing; `allowed_failures`, `interval_seconds` and `timeout_seconds` map to `failureThreshold`, `periodSeconds` and `timeoutSeconds`. HTTP checks pass on any 200-399 status.
+- `deploy_timeout_seconds` is the time the deploy waits for the first successful check. It is floored by the server config `docker:healthcheck:max-time` (120 seconds when unset): a lower value in `tsuru.yaml` is raised to that minimum.
 
 ## Startupcheck
 
@@ -173,3 +192,16 @@ Either `port` or `target_port` must be specified. To expose no ports (e.g., for 
 - Health check uses the first configured port for each process
 - Only the first port of the web process is exposed in the router
 - Other ports can be accessed from apps in the same cluster using [Kubernetes DNS](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#services): `appname-processname.namespace.svc.cluster.local`
+
+### Legacy `kubernetes: groups:` form
+
+Older files declare ports under `kubernetes: groups: <group>: <process>: ports:`. tsuru still parses it, but ports under `processes[]` win when both are present, so prefer `processes[].ports`. The legacy form looks like:
+
+```yaml
+kubernetes:
+  groups:
+    pod1:
+      web:
+        ports:
+        - port: 8080
+```

@@ -12,8 +12,13 @@ A `Procfile` is a plain text file named `Procfile` placed at the root of your ap
 <name>: <command>
 ```
 
-- **name**: A string which may contain alphanumerics and underscores. It identifies one type of process.
-- **command**: A shell command line which will be executed to spawn a process.
+- **name**: letters, digits, `_` and `-` (tsuru parses each line with `^([A-Za-z0-9_-]+):\s*(.+)$`). Because the name becomes part of Kubernetes object names, use lowercase in practice.
+- **command**: A shell command line which will be executed to spawn a process. Lines that do not match the pattern are ignored.
+
+If there is no `Procfile` and `tsuru.yaml` declares no process command, tsuru creates a single `web` process from the image `ENTRYPOINT` and `CMD`.
+
+!!! note "tsuru.yaml takes precedence"
+    A `processes:` list in [tsuru.yaml](tsuru_yaml.md) overrides Procfile entries with the same name. Use it when a process also needs its own healthcheck, startupcheck or ports.
 
 ## Example
 
