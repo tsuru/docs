@@ -19,12 +19,21 @@ It's responsible for almost everything since Tsuru workloads[^1] creation until 
 | | |
 |-|-|
 | Source code: | :simple-github: [tsuru/tsuru](https://github.com/tsuru/tsuru) |
-| OpenAPI specification: | :simple-swagger: [Tsuru API](../reference/api.md) |
+| API specification (Swagger 2.0): | :simple-swagger: [Tsuru API](../reference/api.md) |
+
+Besides serving the API, the same process emits an **event** for every write operation (the
+audit trail behind `tsuru event list`, see [Events](../admin_guides/events.md)), keeps a small
+**in-memory ring buffer of recent app logs** for `tsuru app log` (pod logs remain the source of
+truth; see [Observability](../admin_guides/observability.md#application-logs)), exposes Prometheus
+metrics on `/metrics` and exports traces over **OpenTelemetry** when `OTEL_EXPORTER_OTLP_ENDPOINT`
+is set. All specifications in this repository are written in Swagger 2.0, not OpenAPI 3.
 
 ## MongoDB
 
-The datastore service used by Tsuru API server to store the Tsuru workloads[^1] expected state, events and so on.
-It must be a [MongoDB] server, version 6 or newer (the Helm chart ships MongoDB 8).
+The only datastore. Tsuru API server stores in it the expected state of Tsuru workloads[^1], users,
+teams, roles, tokens, clusters, pools, plans and the full event history. There is no queue or cache
+service (no Redis).
+It must be a [MongoDB] server.
 
 | | |
 |-|-|
@@ -44,6 +53,7 @@ It must be compliant with [Docker Registry API][Docker registry] or [OCI distrib
 <small>This service is part of Tsuru's core services.</small>
 
 The service is responsible for intermediating the build and push process of Tsuru workloads[^1] container images to the container registry.
+Tsuru API server calls it over gRPC (cluster setting `build-service-address`); it generates a Containerfile for source deploys, drives BuildKit, pushes the image and reports back the `Procfile` and `tsuru.yaml` it found. Platform images are built the same way.
 
 | | |
 |-|-|
@@ -62,11 +72,25 @@ Service to build and push container images from a container file recipe.
 <small>This service is part of Tsuru's core services.</small>
 
 The web API service which Tsuru updates the app's service backend.
+Its reference implementation, kubernetes-router, creates a Kubernetes `Service` and, in `ingress`/`ingress-nginx`/`istio-gateway`/`gateway-api` modes, an `Ingress` or gateway route per app. See [Managing routers](../admin_guides/managing_routers.md).
 
 | | |
 |-|-|
 | Source code: | :simple-github: [tsuru/kubernetes-router] |
-| OpenAPI specification: | :simple-swagger: [Tsuru Router API](../reference/router_api.md) |
+| API specification (Swagger 2.0): | :simple-swagger: [Tsuru Router API](../reference/router_api.md) |
+
+## Ingress or Gateway API controller
+
+The component that actually receives app traffic. kubernetes-router only writes the routing objects; a controller running in the cluster turns them into a reachable endpoint. Which controller you run depends on the router mode:
+
+- **Ingress controller** (`ingress` and `ingress-nginx` modes): the router writes `Ingress` objects. The Helm chart installs ingress-nginx with class `tsuru-nginx`.
+- **Gateway API controller** (`gateway-api` mode): the router writes `HTTPRoute` objects attached to a `Gateway`, so any [Gateway API] implementation (Envoy Gateway, Cilium, Istio, cloud load balancer controllers, ...) can replace the ingress controller.
+- **Istio** (`istio-gateway` mode): the router writes Istio `Gateway` and `VirtualService` objects.
+
+| | |
+|-|-|
+| Source code: | :simple-github: [kubernetes/ingress-nginx] (default in the Helm chart) |
+| Specification: | [Gateway API] |
 
 ## Kubernetes cluster
 
@@ -90,3 +114,5 @@ The [Kubernetes] cluster where Tsuru API should run the Tsuru workloads[^1] on.
 [moby/buildkit]: https://github.com/moby/buildkit
 [tsuru/kubernetes-router]: https://github.com/tsuru/kubernetes-router
 [kubernetes/kubernetes]: https://github.com/kubernetes/kubernetes
+[kubernetes/ingress-nginx]: https://github.com/kubernetes/ingress-nginx
+[Gateway API]: https://gateway-api.sigs.k8s.io/

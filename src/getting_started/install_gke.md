@@ -4,97 +4,87 @@ title: Installing Tsuru on Google Kubernetes Engine cluster with Helm
 
 # Installing Tsuru on Google Kubernetes Engine cluster with Helm {#installing_tsuru_gke}
 
-This post will show how to install and configure Tsuru on GKE with Helm.
-All steps in this guide were done in Kubernetes v1.33.0. While it might
-work for almost all Kubernetes versions, some versions may break
-something. Feel free to report us in that case. You need to have both
-gcloud and kubectl previously installed on your machine, if you don't
-have it yet, you can install it
-[here](https://cloud.google.com/sdk/docs/install/), with gcloud and
-[kubectl](https://kubernetes.io/docs/tasks/tools/) properly installed,
-let's get started. To create a Kubernetes cluster using gcloud, run the
-command:
+This guide installs tsuru on GKE with the `tsuru-stack` Helm chart. You need `gcloud`, `kubectl`,
+`helm` and the [tsuru client](../user_guides/install_client.md) installed.
+
+## Create the cluster
 
 ``` bash
-$ gcloud beta container clusters create tsuru-cluster --image-type=COS --machine-type=e2-standard-4 --num-nodes "2" --zone=$YOUR_PREEFERED_ZONE
+gcloud container clusters create tsuru-cluster \
+  --image-type=COS_CONTAINERD --machine-type=e2-standard-4 --num-nodes=2 \
+  --zone=$YOUR_PREFERRED_ZONE
+gcloud container clusters get-credentials tsuru-cluster --zone=$YOUR_PREFERRED_ZONE
 ```
 
-Download a release of the [Helm
-client](https://github.com/helm/helm/releases). With helm installed,
-let's start
+## What the chart installs
 
-## Installing Tsuru
+The chart and its dependencies are described in the
+[minikube guide](install_minikube.md#what-the-chart-installs): tsuru-api, MongoDB, a container
+registry, deploy-agent with BuildKit, kubernetes-router and ingress-nginx. On GKE the API and the
+ingress controller get `LoadBalancer` services with public IPs. `tsurud` registers the cluster it
+runs in as cluster `local` with a default pool `local` on first start, so no `cluster add` is needed.
 
-To install Tsuru and its dependencies we will use a helm chart
+!!! warning "Registry"
+
+    The bundled registry speaks plain HTTP inside the cluster. The chart tells BuildKit and
+    tsuru to treat it as insecure, and the `registryAliases` DaemonSet rewrites `/etc/hosts` on
+    every node so the kubelet resolves `tsuru-registry.tsuru-system.svc.cluster.local`. This is
+    fine for a trial. For anything else disable it (`--set registry.enabled=false`) and point
+    `tsuru-api.tsuruConfig.clusters.defaults.registry` at Artifact Registry or another TLS
+    registry, with `registry-insecure` removed.
+
+## Install tsuru
 
 ``` bash
-$ helm repo add tsuru https://tsuru.github.io/charts
+helm repo add tsuru https://tsuru.github.io/charts
+helm repo update
+
+helm install tsuru tsuru/tsuru-stack --create-namespace --namespace tsuru-system
 ```
 
-Now let's install the chart!
+Wait for the pods and for both load balancers to get an IP:
 
 ``` bash
-$ helm install tsuru tsuru/tsuru-stack --create-namespace --namespace tsuru-system
+kubectl get pods -n tsuru-system -w
+kubectl get svc -n tsuru-system tsuru-api tsuru-ingress-nginx-controller
 ```
 
-Now you have tsuru installed!!
+## Point the router at the ingress IP
 
-## Configuring Tsuru
-
-Create the admin user on tsuru:
+Apps are published under a wildcard domain served by ingress-nginx. Set it to the controller's IP
+with a `nip.io` name (or your own DNS zone):
 
 ``` bash
-$ kubectl exec -it -n tsuru-system deploy/tsuru-api -- tsurud root user create admin@admin.com# CHANGE IT TO YOUR ADMIN USER #
+export NGINX_HOST=$(kubectl get svc -n tsuru-system tsuru-ingress-nginx-controller -o 'jsonpath={.status.loadBalancer.ingress[].ip}')
+helm upgrade tsuru tsuru/tsuru-stack --namespace tsuru-system --reuse-values \
+  --set kubernetes-router.ingressExpose.domain=cloud.$NGINX_HOST.nip.io \
+  --set kubernetes-router.ingressExpose.port=80
 ```
 
-Add the tsuru target and log in:
+## Create the first administrator and log in
 
 ``` bash
-$ export TSURU_HOST=$(kubectl get svc -n tsuru-system tsuru-api -o 'jsonpath={.status.loadBalancer.ingress[].ip}')
-$ tsuru target-add gke http://$TSURU_HOST -s
-$ tsuru login
+kubectl exec -it -n tsuru-system deploy/tsuru-api -- tsurud root-user-create admin@example.com
+
+export TSURU_HOST=$(kubectl get svc -n tsuru-system tsuru-api -o 'jsonpath={.status.loadBalancer.ingress[].ip}')
+tsuru target add gke http://$TSURU_HOST -s
+tsuru login admin@example.com
 ```
 
-Let's assign the correct IP to default router:
+The API is reachable over plain HTTP on a public IP at this point. Before real use put TLS in
+front of it (`tsuru-api.service.httpsOnly`, or an ingress with a certificate) and switch to an
+SSO scheme, see [Authentication](../admin_guides/authentication.md).
+
+## Create a team, install platforms, deploy
 
 ``` bash
-$ export NGINX_HOST=$(kubectl get svc -n tsuru-system tsuru-ingress-nginx-controller -o 'jsonpath={.status.loadBalancer.ingress[].ip}')
-$ helm upgrade tsuru tsuru/tsuru-stack --namespace tsuru-system --set kubernetes-router.ingressExpose.domain=cloud.$NGINX_HOST.nip.io --set kubernetes-router.ingressExpose.port=80
-```
+tsuru team create admin
+tsuru platform add python
+tsuru platform add go
 
-Create one team:
-
-``` bash
-$ tsuru team create admin
-```
-
-Build Platforms:
-
-``` bash
-$ tsuru platform add python
-$ tsuru platform add go
-```
-
-Create and Deploy tsuru-dashboard app:
-
-``` bash
-$ tsuru app create dashboard
-$ tsuru app deploy -a dashboard --image tsuru/dashboard
-```
-
-Create an app to test:
-
-``` bash
-$ mkdir example-go
-$ cd example-go
-$ git clone https://github.com/tsuru/platforms.git
-$ cd platforms/examples/go
-$ tsuru app create example-go go
-$ tsuru app deploy -a example-go .
-```
-
-Check the app info and get the url:
-
-``` bash
-$ tsuru app info -a example-go
+git clone https://github.com/tsuru/platforms.git
+cd platforms/examples/go
+tsuru app create example-go go
+tsuru app deploy -a example-go .
+tsuru app info -a example-go
 ```
