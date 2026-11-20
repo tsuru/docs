@@ -197,7 +197,9 @@ A single add request must contain either static permissions or dynamic
 permissions; do not mix both kinds in one command invocation.
 
 Service owners declare the operations with `tsuru service manifest set
-<service> <file>` and inspect them with `tsuru service manifest get`.
+<service> <file>` and inspect them with `tsuru service manifest get`; the
+manifest format is described in
+[Service permissions manifest](../services/permissions_manifest.md).
 `tsuru role info` lists a role's dynamic permissions together with its static
 ones.
 
