@@ -36,10 +36,7 @@ runs in as cluster `local` with a default pool `local` on first start, so no `cl
 ## Install tsuru
 
 ``` bash
-helm repo add tsuru https://tsuru.github.io/charts
-helm repo update
-
-helm install tsuru tsuru/tsuru-stack --create-namespace --namespace tsuru-system
+helm install tsuru oci://ghcr.io/tsuru/charts/tsuru-stack --create-namespace --namespace tsuru-system
 ```
 
 Wait for the pods and for both load balancers to get an IP:
@@ -56,7 +53,7 @@ with a `nip.io` name (or your own DNS zone):
 
 ``` bash
 export NGINX_HOST=$(kubectl get svc -n tsuru-system tsuru-ingress-nginx-controller -o 'jsonpath={.status.loadBalancer.ingress[].ip}')
-helm upgrade tsuru tsuru/tsuru-stack --namespace tsuru-system --reuse-values \
+helm upgrade tsuru oci://ghcr.io/tsuru/charts/tsuru-stack --namespace tsuru-system --reuse-values \
   --set kubernetes-router.ingressExpose.domain=cloud.$NGINX_HOST.nip.io \
   --set kubernetes-router.ingressExpose.port=80
 ```

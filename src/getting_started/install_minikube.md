@@ -54,10 +54,7 @@ pull app images from the in-cluster registry by its service name.
 ## Install tsuru
 
 ``` bash
-helm repo add tsuru https://tsuru.github.io/charts
-helm repo update
-
-helm install tsuru tsuru/tsuru-stack --create-namespace --namespace tsuru-system
+helm install tsuru oci://ghcr.io/tsuru/charts/tsuru-stack --create-namespace --namespace tsuru-system
 ```
 
 Wait until every pod in `tsuru-system` is `Running`:
