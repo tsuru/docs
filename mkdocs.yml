@@ -21,14 +21,18 @@ theme:
   - navigation.tabs
   - toc.follow
 
+plugins:
+- search
+- swagger-ui-tag
+
 markdown_extensions:
 - admonition
 - attr_list
 - footnotes
 - pymdownx.details
 - pymdownx.emoji:
-    emoji_index: !!python/name:materialx.emoji.twemoji
-    emoji_generator: !!python/name:materialx.emoji.to_svg
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
 - pymdownx.highlight
 - pymdownx.snippets:
     base_path:
@@ -70,8 +74,49 @@ nav:
   - Managing teams: ./admin_guides/managing_teams.md
 
 - References:
-  - Tsuru Client: ./tsuru_client/tsuru.md
+  - Tsuru Client:
+    - Overview: ./tsuru_client/tsuru.md
+    - tsuru app: ./tsuru_client/tsuru_app.md
+    - tsuru autoscale: ./tsuru_client/tsuru_autoscale.md
+    - tsuru certificate: ./tsuru_client/tsuru_certificate.md
+    - tsuru change-password: ./tsuru_client/tsuru_change-password.md
+    - tsuru cluster: ./tsuru_client/tsuru_cluster.md
+    - tsuru cname: ./tsuru_client/tsuru_cname.md
+    - tsuru completion: ./tsuru_client/tsuru_completion.md
+    - tsuru config: ./tsuru_client/tsuru_config.md
+    - tsuru deploy: ./tsuru_client/tsuru_deploy.md
+    - tsuru env: ./tsuru_client/tsuru_env.md
+    - tsuru event: ./tsuru_client/tsuru_event.md
+    - tsuru info: ./tsuru_client/tsuru_info.md
+    - tsuru job: ./tsuru_client/tsuru_job.md
+    - tsuru log: ./tsuru_client/tsuru_log.md
+    - tsuru login: ./tsuru_client/tsuru_login.md
+    - tsuru logout: ./tsuru_client/tsuru_logout.md
+    - tsuru metadata: ./tsuru_client/tsuru_metadata.md
+    - tsuru permission: ./tsuru_client/tsuru_permission.md
+    - tsuru plan: ./tsuru_client/tsuru_plan.md
+    - tsuru platform: ./tsuru_client/tsuru_platform.md
+    - tsuru plugin: ./tsuru_client/tsuru_plugin.md
+    - tsuru pool: ./tsuru_client/tsuru_pool.md
+    - tsuru provisioner: ./tsuru_client/tsuru_provisioner.md
+    - tsuru reset-password: ./tsuru_client/tsuru_reset-password.md
+    - tsuru role: ./tsuru_client/tsuru_role.md
+    - tsuru rollback: ./tsuru_client/tsuru_rollback.md
+    - tsuru router: ./tsuru_client/tsuru_router.md
+    - tsuru service: ./tsuru_client/tsuru_service.md
+    - tsuru shell: ./tsuru_client/tsuru_shell.md
+    - tsuru tag: ./tsuru_client/tsuru_tag.md
+    - tsuru target: ./tsuru_client/tsuru_target.md
+    - tsuru team: ./tsuru_client/tsuru_team.md
+    - tsuru token: ./tsuru_client/tsuru_token.md
+    - tsuru unit: ./tsuru_client/tsuru_unit.md
+    - tsuru user: ./tsuru_client/tsuru_user.md
+    - tsuru volume: ./tsuru_client/tsuru_volume.md
   - Configuration (tsuru.conf): ./reference/config.md
+  - API specifications:
+    - Tsuru API: ./reference/api.md
+    - Service API: ./reference/service_api.md
+    - Router API: ./reference/router_api.md
   - Services:
     - Building your service: ./services/build.md
     - Service API workflow: ./services/api.md

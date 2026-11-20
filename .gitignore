@@ -6,3 +6,4 @@ site/
 
 # VIM internals
 *.swp
+.bin/

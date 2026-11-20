@@ -12,7 +12,7 @@ tsuru sends requests to the service API for the following actions:
 
 ## API Specification
 
-The API specification is available as an OpenAPI v3 specification at [SwaggerHub](https://app.swaggerhub.com/apis/tsuru/tsuru-service_api/1.0.0).
+The full specification is available in the [Service API reference](../reference/service_api.md).
 
 ## Authentication
 

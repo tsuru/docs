@@ -19,7 +19,7 @@ It's responsible for almost everything since Tsuru workloads[^1] creation until 
 | | |
 |-|-|
 | Source code: | :simple-github: [tsuru/tsuru](https://github.com/tsuru/tsuru) |
-| OpenAPI specification: | :simple-swagger: [Tsuru API][SwaggerHub - Tsuru API] |
+| OpenAPI specification: | :simple-swagger: [Tsuru API](../reference/api.md) |
 
 ## MongoDB
 
@@ -66,7 +66,7 @@ The web API service which Tsuru updates the app's service backend.
 | | |
 |-|-|
 | Source code: | :simple-github: [tsuru/kubernetes-router] |
-| OpenAPI specification: | :simple-swagger: [Tsuru Router API][SwaggerHub - Tsuru Router API] |
+| OpenAPI specification: | :simple-swagger: [Tsuru Router API](../reference/router_api.md) |
 
 ## Kubernetes cluster
 
@@ -79,8 +79,6 @@ The [Kubernetes] cluster where Tsuru API should run the Tsuru workloads[^1] on.
 [^1]: Tsuru apps and jobs
 
 [Arch diagram link]: https://excalidraw.com/#json=82LzV5xb0cOcKAEjYFXLK,rRJ14gZdbHKrlYSmFG_rFw
-[SwaggerHub - Tsuru API]: https://app.swaggerhub.com/apis/tsuru/tsuru/
-[SwaggerHub - Tsuru Router API]: https://app.swaggerhub.com/apis/tsuru/tsuru-router_api/
 [MongoDB]: https://www.mongodb.com/
 [Docker registry]: https://docs.docker.com/registry/
 [OCI distribution spec]: https://github.com/opencontainers/distribution-spec
