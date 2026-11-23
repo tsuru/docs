@@ -7,7 +7,7 @@ Add a new default role on a specific event.
 Add a new default role on a specific event.
 
 ```
-tsuru role default add [--user-create <role name>]... [--team-create <role name>]... [flags]
+tsuru role default add [--team-create <role name>]... [--user-create <role name>]... [flags]
 ```
 
 ### Options
