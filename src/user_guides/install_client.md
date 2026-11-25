@@ -42,6 +42,7 @@ With `tsuru`, developers gain the ability to create and deploy applications effo
 
     ``` bash
     brew tap tsuru/homebrew-tsuru
+    brew trust --formula tsuru/tsuru/tsuru
     brew install tsuru
     ```
 
