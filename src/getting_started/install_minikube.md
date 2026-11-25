@@ -17,7 +17,7 @@ cluster with the `tsuru-stack` Helm chart. You need `minikube`, `kubectl`, `helm
 ## Create the cluster
 
 ``` bash
-minikube start
+minikube start --insecure-registry="tsuru-registry.tsuru-system.svc.cluster.local"
 ```
 
 The example uses the docker driver; see the [minikube drivers](https://minikube.sigs.k8s.io/docs/drivers/)
